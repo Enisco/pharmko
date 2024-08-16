@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:pharmko/components/appstyles.dart';
@@ -31,7 +32,26 @@ class PharmkoLandingPage extends StatelessWidget {
       body: Container(
         color: Colors.amber,
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){}),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Container(
+          width: 100,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                CupertinoIcons.add,
+                color: Colors.white,
+              ),
+              
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
