@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "949612592885",
+    "project_id": "pharmko-kenny",
+    "storage_bucket": "pharmko-kenny.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949612592885:android:61abaf77b26d53346dcfbc",
+        "android_client_info": {
+          "package_name": "com.pharmko.pharmkoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8uYxKhDR5C12Q0jLKyjeQR4zAg4dV6os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

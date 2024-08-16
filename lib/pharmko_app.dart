@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:pharmko/components/appstyles.dart';
@@ -26,7 +24,14 @@ class PharmkoLandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Pharmko", style: AppStyles.headerStyle())),
+      appBar: AppBar(
+        title: Text("Pharmko", style: AppStyles.headerStyle()),
+        // backgroundColor: Colors.teal,
+      ),
+      body: Container(
+        color: Colors.amber,
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: (){}),
     );
   }
 }
