@@ -1,4 +1,3 @@
-
 // ignore_for_file: depend_on_referenced_packages, avoid_print
 
 import 'dart:async';
@@ -8,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:pharmko/components/strings.dart';
 
 class MainController extends GetxController {
-
   var receivedMessage = '0';
   double? temperature, tds;
   bool isChangingWater = false, isPumpingIn = false, isPumpingOut = false;
@@ -25,14 +24,15 @@ class MainController extends GetxController {
   }
 
   /// MQTT EMQX Credentials
-  final client =
-      MqttServerClient.withPort('broker.emqx.io', 'wastebinapp_client1', 1883);
+  final client = MqttServerClient.withPort(
+    'broker.emqx.io',
+    'pharmko_client_${DateTime.now().millisecondsSinceEpoch}',
+    1883,
+  );
   var pongCount = 0, connStatus = 0;
   final builder = MqttClientPayloadBuilder();
-  String pubTopic = 'peesam/ayomega/app/pond';
-  String subTopic = 'peesam/ayomega/pond/app';
-  // bool snoozeNotification = false, shouldSnooze = false;
-  // DateTime snoozeTime = DateTime.now();
+  String pubTopic = 'pharmko/kenny/rider/others';
+  String subTopic = 'pharmko/kenny/others/rider';
 
   /// Functions
   Future<void> mqttConnect() async {
@@ -102,7 +102,7 @@ class MainController extends GetxController {
 
           if (temperature != null && temperature! > 82.0) {
             print("Overtemperature");
-            
+
             update();
             print('Full: temperature $temperature is greater than 82F');
           } else {
@@ -111,7 +111,7 @@ class MainController extends GetxController {
 
           if (tds != null && tds! > 450.0) {
             print("TDS is now toxic");
-            
+
             update();
             print('Full: tds $tds is greater than 450 ppm');
           } else {
@@ -133,7 +133,7 @@ class MainController extends GetxController {
   void mqttSubscribe() {
     // Subscribe to GsmClientTest/ledStatus
     print('Subscribing to the $subTopic topic');
-    client.subscribe(subTopic, MqttQos.atMostOnce);
+    client.subscribe(isRiderApp ? subTopic : pubTopic, MqttQos.atMostOnce);
   }
 
   void mqttPublish(String msg) {
@@ -142,7 +142,11 @@ class MainController extends GetxController {
 
     // Publish it
     print('Publishing message: $msg');
-    client.publishMessage(pubTopic, MqttQos.atMostOnce, builder.payload!);
+    client.publishMessage(
+      isRiderApp ? pubTopic : subTopic,
+      MqttQos.exactlyOnce,
+      builder.payload!,
+    );
   }
 
   void mqttUnsubscribe() {

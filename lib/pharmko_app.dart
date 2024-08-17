@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:logger/logger.dart';
 import 'package:pharmko/components/appstyles.dart';
+
+var logger = Logger();
 
 class PharmkoApp extends StatelessWidget {
   const PharmkoApp({super.key});
@@ -40,14 +43,13 @@ class PharmkoLandingPage extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 CupertinoIcons.add,
                 color: Colors.white,
               ),
-              
             ],
           ),
         ),
