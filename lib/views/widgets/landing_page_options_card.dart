@@ -5,6 +5,7 @@ import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/components/strings_helper.dart';
 import 'package:pharmko/pharmko_app.dart';
+import 'package:pharmko/views/patient_views/patient_home.dart';
 
 enum Roles { pharmacy, patient, rider }
 
@@ -27,6 +28,12 @@ Widget landingPageOptionsCard({
                 logger.d("Pharmacy selected");
               } else if (role == Roles.patient) {
                 logger.f("Patient selected");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PatientHomePage(),
+                  ),
+                );
               } else {
                 logger.e("Rider selected");
               }

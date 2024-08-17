@@ -10,12 +10,15 @@ class PatientHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pharmko", style: AppStyles.headerStyle()),
+        automaticallyImplyLeading: false,
+        title: Text("Pharmko User", style: AppStyles.headerStyle()),
         backgroundColor: Colors.teal,
       ),
       body: Container(
-          // color: Colors.amber,
-          ),
+        child: const Column(
+          children: [],
+        ),
+      ),
       floatingActionButton: InkWell(
         onTap: () {},
         child: Container(
