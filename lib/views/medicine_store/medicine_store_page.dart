@@ -5,6 +5,7 @@ import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/shared/medicine_store_card.dart';
+import 'package:pharmko/views/medicine_store/cart_checkout_page.dart';
 
 class MedicineStorePage extends StatefulWidget {
   const MedicineStorePage({super.key});
@@ -21,7 +22,7 @@ class _MedicineStorePageState extends State<MedicineStorePage> {
     return GetBuilder<PharmacyStoreController>(
       init: PharmacyStoreController(),
       initState: (state) => controller.getMedicineList(),
-      builder: (context) {
+      builder: (ctxt) {
         return Scaffold(
           appBar: customAppbar("Pharmko Store"),
           body: Column(
@@ -35,24 +36,37 @@ class _MedicineStorePageState extends State<MedicineStorePage> {
                         itemCount: controller.medicineList.length,
                         itemBuilder: (context, index) {
                           return MedicineStoreCard(
-                            medicine: controller.medicineList[index],
+                            medicine: controller.medicineList[index]!,
                           );
                         },
                       ),
                     ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.teal,
-            onPressed: () {
-              logger.w("Go to Cart Checkout screen");
-            },
-            child: const Icon(
-              CupertinoIcons.cart_fill,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
+          floatingActionButton: controller.cartMedicineList.isNotEmpty == true
+              ? FloatingActionButton(
+                  backgroundColor: Colors.teal,
+                  onPressed: () {
+                    logger.w("Go to Cart Checkout screen");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CartCheckoutPage(),
+                      ),
+                    );
+                  },
+                  child: Badge.count(
+                    count: controller.cartMedicineList.length,
+                    isLabelVisible:
+                        controller.cartMedicineList.isNotEmpty == true,
+                    child: const Icon(
+                      CupertinoIcons.cart_fill,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
         );
       },
     );

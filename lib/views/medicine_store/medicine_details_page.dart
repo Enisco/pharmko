@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/spacer.dart';
+import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
+import 'package:pharmko/shared/logger.dart';
 
 class MedicineDetailsScreen extends StatefulWidget {
   final MedicineModel medicine;
@@ -15,7 +18,8 @@ class MedicineDetailsScreen extends StatefulWidget {
 }
 
 class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
-  int _quantity = 0;
+  final controller = Get.put(PharmacyStoreController());
+  int _quantity = 1;
 
   void _incrementQuantity() {
     setState(() {
@@ -25,7 +29,7 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
 
   void _decrementQuantity() {
     setState(() {
-      if (_quantity > 0) {
+      if (_quantity > 1) {
         _quantity--;
       }
     });
@@ -95,7 +99,13 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
         ),
       ),
       bottomNavigationBar: InkWell(
-        onTap: () {},
+        onTap: () {
+          final medicineToCart = widget.medicine;
+          medicineToCart.orderQuantity = _quantity;
+          logger.f("medicineToCart: ${medicineToCart.toJson()}");
+          controller.updateCartItems(medicineToCart);
+          Navigator.pop(context);
+        },
         child: Container(
           width: 200,
           height: 60,

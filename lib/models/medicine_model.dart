@@ -5,6 +5,7 @@ class MedicineModel {
   DateTime expiryDate;
   String dosage;
   String? caution;
+  int? orderQuantity;
 
   MedicineModel({
     required this.name,
@@ -13,6 +14,7 @@ class MedicineModel {
     required this.expiryDate,
     required this.dosage,
     required this.caution,
+    this.orderQuantity = 1,
   });
 
   // Method to convert a JSON map to a MedicineModel object
@@ -24,6 +26,7 @@ class MedicineModel {
       expiryDate: DateTime.parse(json['expiryDate']),
       dosage: json['dosage'],
       caution: json['caution'],
+      orderQuantity: json['orderQuantity'],
     );
   }
 
@@ -36,6 +39,7 @@ class MedicineModel {
       'expiryDate': expiryDate.toIso8601String(),
       'dosage': dosage,
       'caution': caution,
+      'orderQuantity': orderQuantity,
     };
   }
 }
