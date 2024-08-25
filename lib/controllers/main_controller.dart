@@ -11,9 +11,6 @@ import 'package:pharmko/components/strings.dart';
 
 class MainController extends GetxController {
   var receivedMessage = '0';
-  double? temperature, tds;
-  bool isChangingWater = false, isPumpingIn = false, isPumpingOut = false;
-  String? lasttimeString;
 
   String getLastTime() {
     DateTime now = DateTime.now();
@@ -86,37 +83,11 @@ class MainController extends GetxController {
 
           receivedMessage =
               MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-          lasttimeString = getLastTime();
 
           print(
               'Topic is <${c[0].topic}>, payload is => $receivedMessage => $valCheck');
 
-          List<String> receivedData = receivedMessage.split(',');
-          isPumpingIn = receivedData[0] == "1" ? true : false;
-          isPumpingOut = receivedData[1] == "1" ? true : false;
-          temperature = double.parse(receivedData[2]);
-          tds = double.parse(receivedData[3]);
-          print(
-            " >>>>>>> isPumpingIn: $isPumpingIn, isPumpingOut: $isPumpingOut, temperature: $temperature, tds: $tds ",
-          );
-
-          if (temperature != null && temperature! > 82.0) {
-            print("Overtemperature");
-
-            update();
-            print('Full: temperature $temperature is greater than 82F');
-          } else {
-            print('temperature is less than 82');
-          }
-
-          if (tds != null && tds! > 450.0) {
-            print("TDS is now toxic");
-
-            update();
-            print('Full: tds $tds is greater than 450 ppm');
-          } else {
-            print('tds is less than 450');
-          }
+          // List<String> receivedData = receivedMessage.split(',');
 
           update();
         }) ??

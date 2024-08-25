@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pharmko/pharmko_app.dart';
+import 'package:pharmko/shared/logger.dart';
 
 class FirebaseRepo {
   Future<void> refreshData() async {

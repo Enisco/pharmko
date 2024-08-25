@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/spacer.dart';
+import 'package:pharmko/shared/custom_appbar.dart';
+import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
 
 class PatientHomePage extends StatelessWidget {
   const PatientHomePage({super.key});
@@ -9,18 +11,21 @@ class PatientHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("Pharmko User", style: AppStyles.headerStyle()),
-        backgroundColor: Colors.teal,
-      ),
-      body: Container(
-        child: const Column(
+      appBar: customAppbar("Pharmko User"),
+      body: const SingleChildScrollView(
+        child: Column(
           children: [],
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MedicineStorePage(),
+            ),
+          );
+        },
         child: Container(
           width: 200,
           height: 60,

@@ -4,7 +4,7 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/components/strings_helper.dart';
-import 'package:pharmko/pharmko_app.dart';
+import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/patient_views/patient_home.dart';
 
 enum Roles { pharmacy, patient, rider }
