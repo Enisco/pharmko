@@ -2,10 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/instance_manager.dart';
 import 'package:pharmko/controllers/main_controller.dart';
-import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
@@ -56,7 +53,7 @@ class PatientController extends MainController {
       payment: Payment(amount: amountPaid, paid: true),
     );
     logger.f("New ticket: ${ticket.toJson()}");
-    final createRes = await FirebaseRepo().createTicket(ticket);
+    FirebaseRepo().createTicket(ticket);
   }
 
   load() {
