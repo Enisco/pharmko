@@ -18,7 +18,7 @@ class CartCheckoutPage extends StatefulWidget {
 
 class _CartCheckoutPageState extends State<CartCheckoutPage> {
   final controller = Get.put(PharmacyStoreController());
-  final paymentController = Get.put(PaymentService());
+  final paymentController = Get.put(PaymentGatewayService());
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,8 @@ class _CartCheckoutPageState extends State<CartCheckoutPage> {
                         "Checkout: Pay ₦${controller.totalCost.toStringAsFixed(2)})");
                     paymentController.initiateTransaction(
                       context,
-                      controller.totalCost,
+                      amountToPay: controller.totalCost,
+                      cartMedicineList: controller.cartMedicineList,
                     );
                   },
                   child: Container(

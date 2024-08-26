@@ -31,7 +31,7 @@ Widget landingPageOptionsCard({
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const PatientHomePage(),
+                    builder: (context) => PatientHomePage(),
                   ),
                 );
               } else {

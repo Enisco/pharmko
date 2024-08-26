@@ -25,7 +25,8 @@ dependencies:
   http: ^1.2.2
   fluttertoast: ^8.2.8
   logger: ^2.4.0
-  pay_with_paystack: ^1.0.10
+  flutter_paystack_max: ^1.0.4
+  cloud_firestore: ^5.2.1
 
 dev_dependencies:
   flutter_test:

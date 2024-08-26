@@ -10,6 +10,15 @@ class PharmacyStoreController extends GetxController {
   bool loading = false;
   double totalCost = 0.0;
 
+  resetTicketCreationData() {
+    totalCost = 0.0;
+    cartMedicineList.clear();
+    medicineList.clear();
+    update();
+    stopLoading();
+    logger.w("Reset data: ${cartMedicineList.length}, $totalCost");
+  }
+
   getMedicineList() {
     medicineList = parseMedicineList(jsonEncode(medicineListJson));
     updateController();

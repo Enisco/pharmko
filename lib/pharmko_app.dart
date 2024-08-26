@@ -5,6 +5,8 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class PharmkoApp extends StatelessWidget {
   const PharmkoApp({super.key});
 
@@ -13,6 +15,7 @@ class PharmkoApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Pharmko',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
         primarySwatch: Colors.teal,

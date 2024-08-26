@@ -1,37 +1,112 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/instance_manager.dart';
+import 'package:pharmko/components/strings.dart';
+import 'package:pharmko/controllers/store_controller.dart';
+import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/shared/logger.dart';
 
 class FirebaseRepo {
-  Future<void> refreshData() async {
-    // final accessDataRef = FirebaseDatabase.instance.ref("access_data");
-
-    // accessDataRef.onChildAdded.listen(
-    //   (event) {
-    //     AccessDataModel retrievedAccessData = accessDataModelFromJson(
-    //         jsonEncode(event.snapshot.value).toString());
-    //     logger.d("Going again");
-    //     return retrievedAccessData;
-    //   },
-    // );
-  }
-
-  updateAccessData(updatedAccessData) async {
-    try {
-      String rfId = updatedAccessData.id!;
-
-      DatabaseReference ref =
-          FirebaseDatabase.instance.ref("access_data/$rfId");
-
-      logger.f(updatedAccessData.toJson());
-
-      await ref.update(updatedAccessData.toJson()).whenComplete(() async {
-        logger.d("Data updated");
-        Fluttertoast.showToast(msg: "Data updated");
-      });
+  createTicket(OrderTicketModel ticket) {
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref(AppStrings.activeTickets);
+    ref.set(ticket.toJson()).then((_) {
+      logger.i("Ticket created successfully");
+      Get.put(PharmacyStoreController()).resetTicketCreationData();
       return true;
-    } catch (e) {
+    }).catchError((error) {
+      logger.e("Failed to create ticket: $error");
       return false;
-    }
+    });
   }
+
+  void updateTicket(OrderTicketModel ticket) {
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref(AppStrings.activeTickets);
+    ref.update(ticket.toJson()).then((_) {
+      logger.i("Ticket updated successfully");
+    }).catchError((error) {
+      logger.e("Failed to update ticket: $error");
+    });
+  }
+
+  void closeTicket(String ticketId) {
+    DatabaseReference activeRef =
+        FirebaseDatabase.instance.ref("ActiveTickets");
+    DatabaseReference closedRef =
+        FirebaseDatabase.instance.ref("closedTickets/$ticketId");
+
+    activeRef.once().then((DatabaseEvent event) {
+      if (event.snapshot.exists) {
+        // Move the ticket to "closedTickets"
+        closedRef.set(event.snapshot.value).then((_) {
+          // Remove the ticket from "ActiveTickets"
+          activeRef.remove().then((_) {
+            logger.f(
+                "Ticket moved to closedTickets and removed from ActiveTickets");
+          }).catchError((error) {
+            logger.e("Failed to remove ticket from ActiveTickets: $error");
+          });
+        }).catchError((error) {
+          logger.e("Failed to move ticket to closedTickets: $error");
+        });
+      } else {
+        logger.w("Ticket not found in ActiveTickets");
+      }
+    }).catchError((error) {
+      logger.e("Failed to retrieve ticket: $error");
+    });
+  }
+
+  /*
+  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  Future<OrderTicketModel?> fecthActiveTickets() async {
+    try {
+      final QuerySnapshot result = await firebaseFirestore
+          .collection(AppStrings.tickets)
+          .where("isActive", isEqualTo: true)
+          .get();
+      final List<DocumentSnapshot> documents = result.docs;
+      if (documents.isNotEmpty) {
+        List<OrderTicketModel> activeticketsList = [];
+        for (var element in documents) {
+          OrderTicketModel patient =
+              OrderTicketModel.fromJson(element.data() as Map<String, dynamic>);
+          activeticketsList.add(patient);
+        }
+        return activeticketsList[0];
+      }
+
+      firebaseFirestore
+          .collection(AppStrings.tickets)
+          .where("isActive", isEqualTo: true)
+          .snapshots()
+          .listen((QuerySnapshot snapshot) {
+        for (var change in snapshot.docChanges) {
+          switch (change.type) {
+            case DocumentChangeType.added:
+              print('New active ticket: ${change.doc.data()}');
+              break;
+            case DocumentChangeType.modified:
+              print('Updated active ticket: ${change.doc.data()}');
+              break;
+            case DocumentChangeType.removed:
+              print('Removed active ticket: ${change.doc.data()}');
+              break;
+          }
+        }
+      });
+    } catch (e, s) {
+      logger.e(e, stackTrace: s);
+    }
+    return null;
+  }
+
+  Future<void> updatetickets(OrderTicketModel ticketData) async {
+    await firebaseFirestore
+        .collection(AppStrings.tickets)
+        .doc(ticketData.ticketId)
+        .set(ticketData.toJson());
+  }
+*/
 }
