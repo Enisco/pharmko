@@ -18,7 +18,7 @@ class OrderTicketModel {
     List<MedicineModel?>? medications;
     Buyer? buyer;
     Payment? payment;
-    Deliverer? deliverer;
+    Buyer? deliverer;
     bool? orderConfirmed;
     bool? dispatched;
     bool? orderDelivered;
@@ -47,7 +47,7 @@ class OrderTicketModel {
         List<MedicineModel>? medications,
         Buyer? buyer,
         Payment? payment,
-        Deliverer? deliverer,
+        Buyer? deliverer,
         bool? orderConfirmed,
         bool? dispatched,
         bool? orderDelivered,
@@ -76,7 +76,7 @@ class OrderTicketModel {
         medications: json["medications"] == null ? [] : List<MedicineModel>.from(json["medications"]!.map((x) => MedicineModel.fromJson(x))),
         buyer: json["buyer"] == null ? null : Buyer.fromJson(json["buyer"]),
         payment: json["payment"] == null ? null : Payment.fromJson(json["payment"]),
-        deliverer: json["deliverer"] == null ? null : Deliverer.fromJson(json["deliverer"]),
+        deliverer: json["deliverer"] == null ? null : Buyer.fromJson(json["deliverer"]),
         orderConfirmed: json["orderConfirmed"],
         dispatched: json["dispatched"],
         orderDelivered: json["orderDelivered"],
@@ -103,8 +103,8 @@ class Buyer {
     String? name;
     String? email;
     String? phoneNumber;
-    String? longitude;
-    String? latitude;
+    double? longitude;
+    double? latitude;
 
     Buyer({
         this.name,
@@ -118,8 +118,8 @@ class Buyer {
         String? name,
         String? email,
         String? phoneNumber,
-        String? longitude,
-        String? latitude,
+        double? longitude,
+        double? latitude,
     }) => 
         Buyer(
             name: name ?? this.name,
@@ -133,8 +133,8 @@ class Buyer {
         name: json["name"],
         email: json["email"],
         phoneNumber: json["phoneNumber"],
-        longitude: json["longitude"],
-        latitude: json["latitude"],
+        longitude: json["longitude"]?.toDouble(),
+        latitude: json["latitude"]?.toDouble(),
     );
 
     Map<String, dynamic> toJson() => {
@@ -143,35 +143,6 @@ class Buyer {
         "phoneNumber": phoneNumber,
         "longitude": longitude,
         "latitude": latitude,
-    };
-}
-
-class Deliverer {
-    String? name;
-    String? phoneNumber;
-
-    Deliverer({
-        this.name,
-        this.phoneNumber,
-    });
-
-    Deliverer copyWith({
-        String? name,
-        String? phoneNumber,
-    }) => 
-        Deliverer(
-            name: name ?? this.name,
-            phoneNumber: phoneNumber ?? this.phoneNumber,
-        );
-
-    factory Deliverer.fromJson(Map<String, dynamic> json) => Deliverer(
-        name: json["name"],
-        phoneNumber: json["phoneNumber"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "name": name,
-        "phoneNumber": phoneNumber,
     };
 }
 
