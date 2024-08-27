@@ -8,6 +8,21 @@ class LocationService {
     bool serviceEnabled;
     LocationPermission permission;
 
+    // Check if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Fluttertoast.showToast(
+        msg: "Enable Locations Permissions, then retry",
+        backgroundColor: Colors.red,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      await Geolocator.openAppSettings().then((_) async {
+        await Geolocator.openLocationSettings();
+      });
+      // Location services are not enabled, prompt the user to enable them.
+      return Future.error('Location services are disabled.');
+    }
+
     // Check for location permissions.
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -25,24 +40,18 @@ class LocationService {
         backgroundColor: Colors.red,
         toastLength: Toast.LENGTH_LONG,
       );
+      await Geolocator.openAppSettings().then((_) async {
+        await Geolocator.openLocationSettings();
+      });
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    // Check if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Fluttertoast.showToast(
-        msg: "Enable Locations Permissions, then retry",
-        backgroundColor: Colors.red,
-        toastLength: Toast.LENGTH_LONG,
-      );
-      // Location services are not enabled, prompt the user to enable them.
-      return Future.error('Location services are disabled.');
-    }
-
     // When permissions are granted, get the current position.
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+      forceAndroidLocationManager: true,
+    );
   }
 
   Future<Position?> getCurrentLocation() async {

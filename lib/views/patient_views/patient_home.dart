@@ -7,6 +7,7 @@ import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/patient_controller.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
+import 'package:pharmko/views/ticket_view.dart';
 
 class PatientHomePage extends StatelessWidget {
   PatientHomePage({super.key});
@@ -28,13 +29,9 @@ class PatientHomePage extends StatelessWidget {
                     ),
                   )
                 : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Text(
-                          "An active ticket",
-                          style: AppStyles.regularStyle(),
-                        ),
-                      ],
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: ActiveTicketWidget(
+                      ticketData: controller.activeTicket!,
                     ),
                   ),
             floatingActionButton: InkWell(

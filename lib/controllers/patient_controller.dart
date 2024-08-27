@@ -34,12 +34,20 @@ class PatientController extends MainController {
           }
           update();
         } else {
-          logger.e("No data received");
+          resetActiveTicket();
+          logger.w("No data received: ${activeTicket?.toJson()} --");
+          update();
         }
       });
     } catch (e, s) {
       logger.e(e, stackTrace: s);
     }
+  }
+
+  void resetActiveTicket() {
+    activeTicket = null;
+    logger.e("No data received: ${activeTicket?.toJson()} --");
+    update();
   }
 
   updateMapView() {

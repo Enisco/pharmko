@@ -7,6 +7,8 @@ import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+Roles currentUserRole = Roles.patient;
+
 class PharmkoApp extends StatelessWidget {
   const PharmkoApp({super.key});
 

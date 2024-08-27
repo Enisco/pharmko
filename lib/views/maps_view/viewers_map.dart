@@ -48,7 +48,7 @@ class _ViewersMapState extends State<ViewersMap> {
                     markerId: const MarkerId('destination'),
                     position:controller.  destinationLocation!),
               },
-              polylines: controller. polylines,
+              polylines: controller.polylines,
             ),
           );
         });

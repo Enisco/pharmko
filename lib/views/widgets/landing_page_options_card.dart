@@ -4,6 +4,7 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/components/strings_helper.dart';
+import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/patient_views/patient_home.dart';
 
@@ -24,6 +25,8 @@ Widget landingPageOptionsCard({
           child: InkWell(
             onTap: () {
               Fluttertoast.showToast(msg: role.name.toSentenceCase());
+              currentUserRole = role;
+              logger.f("CurrentUserRole: $currentUserRole");
               if (role == Roles.pharmacy) {
                 logger.d("Pharmacy selected");
               } else if (role == Roles.patient) {

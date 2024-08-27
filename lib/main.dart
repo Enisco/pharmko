@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:pharmko/controllers/main_controller.dart';
 import 'package:pharmko/firebase_options.dart';
 import 'package:pharmko/pharmko_app.dart';
+import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  currentUserRole = Roles.patient;
 
   final controller = Get.put(MainController());
   controller.mqttConnect();

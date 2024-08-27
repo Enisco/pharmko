@@ -27,15 +27,24 @@ class ViewersMapService extends MainController {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['routes'][0]['overview_polyline']['points'];
-        final points = decodePolyline(data);
+        logger.w("Routes Data: ${response.data}");
+        final routes = response.data['routes'];
+        logger.f("Routes Data: $routes");
 
-        polylines.add(Polyline(
-          polylineId: const PolylineId('route'),
-          points: points,
-          width: 5,
-          color: Colors.blue,
-        ));
+        if (routes.isNotEmpty) {
+          final data = routes[0]['overview_polyline']['points'];
+          final points = decodePolyline(data);
+
+          polylines.clear();
+          polylines.add(Polyline(
+            polylineId: const PolylineId('route'),
+            points: points,
+            width: 5,
+            color: Colors.blue,
+          ));
+        } else {
+          logger.w('No routes found');
+        }
         update();
       }
     } catch (e) {

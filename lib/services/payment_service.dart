@@ -16,7 +16,8 @@ class PaymentGatewayService extends PharmacyStoreController {
   }) async {
     const secretKey = 'sk_test_1072024c6d345a86debb59a0ba1793e3422a26d1';
 
-    final amountInKobo = double.parse(amountToPay.toStringAsFixed(2)) * 100;
+    final amountInKobo =
+        (double.parse(amountToPay.toStringAsFixed(2)) * 100).toInt().toDouble();
 
     logger.f("Paying $amountInKobo in Kobo");
 
