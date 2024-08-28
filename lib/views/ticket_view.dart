@@ -61,6 +61,8 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
     );
   }
 
+  // TODO: Resume with _milestoneWidget widget here
+
   Widget _milestoneWidget(double length, {bool? showLast}) {
     return SizedBox(
       child: Column(
