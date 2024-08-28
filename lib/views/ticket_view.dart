@@ -28,12 +28,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            margin: const EdgeInsets.only(left: 6, top: 20, bottom: 20),
-            width: 34,
-            height: 480,
-            color: Colors.amber,
-          ),
+          _milestoneCard(widget.ticketData),
           SizedBox(
             width: screenWidth(context) - 50,
             child: Column(
@@ -48,6 +43,35 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _milestoneCard(OrderTicketModel ticket) {
+    return Container(
+      margin: const EdgeInsets.only(left: 6, top: 20, bottom: 20),
+      width: 34,
+      // height: 480,
+      color: Colors.amber,
+      child: Column(
+        children: [
+          verticalSpacer(size: 40),
+
+        ],
+      ),
+    );
+  }
+
+  Widget _milestoneWidget(double length, {bool? showLast}) {
+    return SizedBox(
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: Colors.tealAccent.withOpacity(0.6),
+
+          ),
+        ],
+      ) ,
     );
   }
 
@@ -83,8 +107,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                 color: dispatched ? Colors.teal : Colors.grey,
               ),
               const Expanded(child: SizedBox()),
-              // TODO: Change conditional after test
-              currentUserRole != Roles.pharmacy
+              currentUserRole == Roles.pharmacy
                   ? dispatched
                       ? const SizedBox.shrink()
                       : CustomButton(
@@ -227,7 +250,6 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
   Widget _orderDetailsCard(OrderTicketModel ticket) {
     return CustomCurvedContainer(
       height: 100,
-      borderColor: Colors.orange,
       width: screenWidth(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
