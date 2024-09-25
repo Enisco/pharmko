@@ -240,7 +240,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                 color: dispatched ? Colors.teal : Colors.grey,
               ),
               const Expanded(child: SizedBox()),
-              currentUserRole == Roles.pharmacy
+              currentUserRole == Roles.pharmacy && ticket.orderDelivered != true
                   ? CustomButton(
                       onPressed: () {
                         logger.i("Dispatch Order");
