@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_empty
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmko/components/appstyles.dart';
@@ -27,6 +29,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _milestoneCard(widget.ticketData),
           SizedBox(
@@ -50,30 +53,37 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
     return Container(
       margin: const EdgeInsets.only(left: 6, top: 20, bottom: 20),
       width: 34,
-      // height: 480,
-      color: Colors.amber,
       child: Column(
         children: [
-          verticalSpacer(size: 40),
-
+          verticalSpacer(size: 25),
+          _milestoneWidget(90, ticket.buyer != null),
+          _milestoneWidget(75, (ticket.medications ?? []).length >= 1),
+          _milestoneWidget(70, ticket.payment?.paid == true),
+          _milestoneWidget(135, ticket.orderConfirmed == true),
+          _milestoneWidget(140, ticket.dispatched == true),
         ],
       ),
     );
   }
 
-  // TODO: Resume with _milestoneWidget widget here
-
-  Widget _milestoneWidget(double length, {bool? showLast}) {
+  Widget _milestoneWidget(double height, bool isFulfilled, {bool? showLast}) {
     return SizedBox(
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: Colors.tealAccent.withOpacity(0.6),
-
+          Icon(
+            isFulfilled
+                ? Icons.check_circle_outline_rounded
+                : Icons.circle_outlined,
+            size: 30,
+            color: isFulfilled ? Colors.teal : Colors.grey.withOpacity(0.5),
+          ),
+          Container(
+            height: height,
+            width: 2,
+            color: isFulfilled ? Colors.teal : Colors.grey.withOpacity(0.5),
           ),
         ],
-      ) ,
+      ),
     );
   }
 
@@ -237,13 +247,17 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
             "Payment Status:",
             style: AppStyles.headerStyle(color: Colors.black, fontSize: 16),
           ),
-          horizontalSpacer(size: 10),
-          Text("Paid ", style: AppStyles.regularStyle(fontSize: 14)),
+          horizontalSpacer(size: 8),
+          Text(ticket.payment?.paid == true ? "Paid " : "",
+              style: AppStyles.regularStyle(fontSize: 14)),
           horizontalSpacer(size: 4),
-          const Icon(
-            CupertinoIcons.check_mark_circled_solid,
-            color: Colors.teal,
-          ),
+          ticket.payment?.paid == true
+              ? const Icon(
+                  CupertinoIcons.check_mark_circled_solid,
+                  color: Colors.teal,
+                )
+              : Text("Not yet paid ",
+                  style: AppStyles.lightStyle(fontSize: 14)),
         ],
       ),
     );
