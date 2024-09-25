@@ -59,14 +59,15 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           _milestoneWidget(90, ticket.buyer != null),
           _milestoneWidget(75, (ticket.medications ?? []).length >= 1),
           _milestoneWidget(70, ticket.payment?.paid == true),
-          _milestoneWidget(135, ticket.orderConfirmed == true),
-          _milestoneWidget(140, ticket.dispatched == true),
+          _milestoneWidget(150, ticket.orderConfirmed == true),
+          _milestoneWidget(170, ticket.dispatched == true),
+          _milestoneWidget(140, false, isLast: true),
         ],
       ),
     );
   }
 
-  Widget _milestoneWidget(double height, bool isFulfilled, {bool? showLast}) {
+  Widget _milestoneWidget(double height, bool isFulfilled, {bool? isLast}) {
     return SizedBox(
       child: Column(
         children: [
@@ -77,11 +78,14 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
             size: 30,
             color: isFulfilled ? Colors.teal : Colors.grey.withOpacity(0.5),
           ),
-          Container(
-            height: height,
-            width: 2,
-            color: isFulfilled ? Colors.teal : Colors.grey.withOpacity(0.5),
-          ),
+          isLast == true
+              ? const SizedBox.shrink()
+              : Container(
+                  height: height,
+                  width: 2,
+                  color:
+                      isFulfilled ? Colors.teal : Colors.grey.withOpacity(0.5),
+                ),
         ],
       ),
     );
@@ -90,7 +94,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
   Widget _dispatchedDetailsCard(OrderTicketModel ticket) {
     final dispatched = ticket.dispatched == true;
     return CustomCurvedContainer(
-      height: 200,
+      height: 240,
       borderColor: dispatched ? Colors.teal : Colors.grey,
       width: screenWidth(context),
       child: Column(
@@ -176,6 +180,22 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                     )
                   : const SizedBox.shrink(),
             ],
+          ),
+          verticalSpacer(size: 12),
+          CustomButton(
+            height: 30,
+            color: dispatched ? Colors.teal : Colors.grey,
+            onPressed: dispatched
+                ? () {
+                    logger.f("Track clicked");
+                  }
+                : () {
+                    logger.w("Package not yet dispatched");
+                  },
+            child: Text(
+              "Track package",
+              style: AppStyles.regularStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
