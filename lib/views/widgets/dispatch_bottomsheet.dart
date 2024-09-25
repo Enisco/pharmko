@@ -10,8 +10,10 @@ import 'package:pharmko/shared/custom_textfield.dart';
 import 'package:pharmko/shared/logger.dart';
 
 showAssignDispatcherSheet(BuildContext context, OrderTicketModel ticket) {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameController =
+      TextEditingController(text: ticket.deliverer?.name ?? '');
+  TextEditingController phoneController =
+      TextEditingController(text: ticket.deliverer?.phoneNumber ?? '');
   bool canPopCheck = false;
   showModalBottomSheet(
     context: context,
@@ -69,44 +71,68 @@ showAssignDispatcherSheet(BuildContext context, OrderTicketModel ticket) {
                   hintText: "Enter disptcher's phone number",
                   keyboardType: TextInputType.number,
                 ),
-                verticalSpacer(size: 35),
-                CustomButton(
-                  color: Colors.teal,
-                  borderColor: Colors.white54,
-                  height: 45,
-                  borderRadius: 16,
-                  width: screenWidth(context) * 0.5,
-                  child: Text(
-                    "Confirm",
-                    style: AppStyles.regularStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (nameController.text.trim().isNotEmpty == true &&
-                        phoneController.text.trim().isNotEmpty == true) {
-                      Buyer delivererData = Buyer(
-                        name: nameController.text.trim(),
-                        phoneNumber: phoneController.text.trim(),
+                verticalSpacer(size: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomButton(
+                      color: Colors.teal,
+                      borderColor: Colors.white54,
+                      height: 45,
+                      borderRadius: 16,
+                      width: screenWidth(context) * 0.45,
+                      child: Text(
+                        "Confirm",
+                        style: AppStyles.regularStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (nameController.text.trim().isNotEmpty == true &&
+                            phoneController.text.trim().isNotEmpty == true) {
+                          Buyer delivererData = Buyer(
+                            name: nameController.text.trim(),
+                            phoneNumber: phoneController.text.trim(),
 
-                        /// Default Rider Destination
-                        latitude: 7.292958,
-                        longitude: 5.149895,
-                      );
-                      FirebaseRepo().updateTicket(ticket.copyWith(
-                        deliverer: delivererData,
-                        dispatched: true,
-                        orderConfirmed: true,
-                      ));
-                      canPopCheck = true;
-                      Navigator.pop(context);
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Name and phone number are needed");
-                    }
-                  },
+                            /// Default Rider Destination
+                            latitude: 7.292958,
+                            longitude: 5.149895,
+                          );
+                          FirebaseRepo().updateTicket(ticket.copyWith(
+                            deliverer: delivererData,
+                            dispatched: true,
+                            orderConfirmed: true,
+                          ));
+                          canPopCheck = true;
+                          Navigator.pop(context);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Name and phone number are needed");
+                        }
+                      },
+                    ),
+                    CustomButton(
+                      color: Colors.white,
+                      borderColor: Colors.grey,
+                      height: 45,
+                      borderRadius: 16,
+                      width: screenWidth(context) * 0.45,
+                      child: Text(
+                        "Cancel",
+                        style: AppStyles.regularStyle(
+                          fontSize: 18,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      onPressed: () async {
+                        canPopCheck = true;
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
                 ),
+                verticalSpacer(size: 5),
               ],
             ),
           ),

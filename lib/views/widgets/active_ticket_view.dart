@@ -2,6 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
@@ -11,6 +13,7 @@ import 'package:pharmko/services/firebase_repo.dart';
 import 'package:pharmko/shared/curved_container.dart';
 import 'package:pharmko/shared/custom_button.dart';
 import 'package:pharmko/shared/logger.dart';
+import 'package:pharmko/views/maps_view/viewers_map.dart';
 import 'package:pharmko/views/widgets/dispatch_bottomsheet.dart';
 import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
@@ -41,6 +44,9 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                 _paymentDetailsCard(widget.ticketData),
                 _confirmedDetailsCard(widget.ticketData),
                 _dispatchedDetailsCard(widget.ticketData),
+                currentUserRole == Roles.pharmacy
+                    ? _pharmacyTransactionCompletedCard(widget.ticketData)
+                    : _patientTransactionCompletedCard(widget.ticketData),
               ],
             ),
           ),
@@ -60,8 +66,15 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           _milestoneWidget(75, (ticket.medications ?? []).length >= 1),
           _milestoneWidget(70, ticket.payment?.paid == true),
           _milestoneWidget(150, ticket.orderConfirmed == true),
-          _milestoneWidget(170, ticket.dispatched == true),
-          _milestoneWidget(140, false, isLast: true),
+          _milestoneWidget(155, ticket.dispatched == true),
+          _milestoneWidget(
+            1,
+            currentUserRole == Roles.pharmacy
+                ? ticket.closed == true
+                : ticket.orderDelivered == true,
+            isLast: true,
+          ),
+          verticalSpacer(size: 75),
         ],
       ),
     );
@@ -88,6 +101,110 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                 ),
         ],
       ),
+    );
+  }
+
+  Widget _pharmacyTransactionCompletedCard(OrderTicketModel ticket) {
+    return CustomCurvedContainer(
+      borderColor: ticket.closed == true ? null : Colors.grey,
+      height: 70,
+      width: screenWidth(context),
+      child: ticket.closed == true
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Transaction completed:",
+                  style: AppStyles.headerStyle(
+                      color: ticket.closed == true ? Colors.black : Colors.grey,
+                      fontSize: 16),
+                ),
+                horizontalSpacer(size: 8),
+                Text(ticket.closed == true ? "Completed " : "",
+                    style: AppStyles.regularStyle(fontSize: 14)),
+                horizontalSpacer(size: 4),
+                ticket.closed == true
+                    ? const Icon(
+                        CupertinoIcons.check_mark_circled_solid,
+                        color: Colors.teal,
+                      )
+                    : Text(
+                        "Still in progress ",
+                        style: AppStyles.lightStyle(
+                          fontSize: 14,
+                          color: ticket.closed == true
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                      ),
+              ],
+            )
+          : CustomButton(
+              onPressed: () {
+                if (ticket.orderDelivered == true) {
+                  logger.i("Close Transaction Ticket");
+                  FirebaseRepo().completeTransaction(ticket);
+                } else {
+                  Fluttertoast.showToast(
+                      msg: "The customer is yet to confirm delivery");
+                }
+              },
+              width: 200,
+              height: 25,
+              color: Colors.grey.withOpacity(0.5),
+              child: const Text("Transaction Completed"),
+            ),
+    );
+  }
+
+  Widget _patientTransactionCompletedCard(OrderTicketModel ticket) {
+    return CustomCurvedContainer(
+      borderColor: ticket.orderDelivered == true ? null : Colors.grey,
+      height: 70,
+      width: screenWidth(context),
+      child: ticket.orderDelivered == true
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Transaction completed:",
+                  style: AppStyles.headerStyle(
+                      color: ticket.orderDelivered == true
+                          ? Colors.black
+                          : Colors.grey,
+                      fontSize: 16),
+                ),
+                horizontalSpacer(size: 8),
+                Text(ticket.orderDelivered == true ? "Completed " : "",
+                    style: AppStyles.regularStyle(fontSize: 14)),
+                horizontalSpacer(size: 4),
+                ticket.orderDelivered == true
+                    ? const Icon(
+                        CupertinoIcons.check_mark_circled_solid,
+                        color: Colors.teal,
+                      )
+                    : Text(
+                        "Still in progress ",
+                        style: AppStyles.lightStyle(
+                          fontSize: 14,
+                          color: ticket.orderDelivered == true
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                      ),
+              ],
+            )
+          : CustomButton(
+              onPressed: () {
+                logger.i("Confirm Order Received");
+                FirebaseRepo()
+                    .updateTicket(ticket.copyWith(orderDelivered: true));
+              },
+              width: 200,
+              height: 25,
+              color: Colors.grey.withOpacity(0.5),
+              child: const Text("Confirm Order Received"),
+            ),
     );
   }
 
@@ -124,21 +241,23 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
               ),
               const Expanded(child: SizedBox()),
               currentUserRole == Roles.pharmacy
-                  ? dispatched
-                      ? const SizedBox.shrink()
-                      : CustomButton(
-                          onPressed: () {
-                            logger.i("Confirm Order");
-                            showAssignDispatcherSheet(
-                              context,
-                              widget.ticketData,
-                            );
-                          },
-                          width: 80,
-                          height: 25,
-                          color: Colors.grey.withOpacity(0.5),
-                          child: const Text("Dispatch"),
-                        )
+                  ? CustomButton(
+                      onPressed: () {
+                        logger.i("Dispatch Order");
+                        showAssignDispatcherSheet(
+                          context,
+                          widget.ticketData,
+                        );
+                      },
+                      width: ticket.deliverer == null ? 80 : 140,
+                      height: 25,
+                      color: Colors.grey.withOpacity(0.5),
+                      child: Text(
+                        ticket.deliverer == null
+                            ? "Dispatch"
+                            : "Change Dispatcher",
+                      ),
+                    )
                   : const SizedBox.shrink(),
             ],
           ),
@@ -158,7 +277,9 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                       fontSize: 14,
                       color: dispatched ? Colors.black : Colors.grey)),
               Text(
-                (ticket.deliverer?.name ?? 'Not assigned yet').toString(),
+                dispatched
+                    ? (ticket.deliverer?.name ?? 'Not assigned yet').toString()
+                    : 'Nil',
                 style: AppStyles.regularStyle(
                     color: dispatched ? Colors.black : Colors.grey),
               ),
@@ -173,8 +294,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                       color: dispatched ? Colors.black : Colors.grey)),
               dispatched
                   ? SelectableText(
-                      (ticket.deliverer?.phoneNumber ?? 'None yet yet')
-                          .toString(),
+                      dispatched ? ticket.deliverer?.phoneNumber ?? '' : 'Nil',
                       style: AppStyles.regularStyle(
                           color: dispatched ? Colors.black : Colors.grey),
                     )
@@ -188,6 +308,17 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
             onPressed: dispatched
                 ? () {
                     logger.f("Track clicked");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewersMapView(
+                          start: LatLng(ticket.deliverer!.latitude!,
+                              ticket.deliverer!.longitude!),
+                          destination: LatLng(ticket.buyer!.latitude!,
+                              ticket.buyer!.longitude!),
+                        ),
+                      ),
+                    );
                   }
                 : () {
                     logger.w("Package not yet dispatched");

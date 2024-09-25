@@ -29,15 +29,18 @@ class FirebaseRepo {
     });
   }
 
-  void closeTicket(String ticketId) {
+  void completeTransaction(OrderTicketModel ticket) {
+    // Deactivate ticket
+    updateTicket(ticket.copyWith(isActive: false, closed: true));
+    // Close ticket
     DatabaseReference activeRef =
         FirebaseDatabase.instance.ref("ActiveTickets");
     DatabaseReference closedRef =
-        FirebaseDatabase.instance.ref("closedTickets/$ticketId");
+        FirebaseDatabase.instance.ref("ClosedTickets/${ticket.ticketId}");
 
     activeRef.once().then((DatabaseEvent event) {
       if (event.snapshot.exists) {
-        // Move the ticket to "closedTickets"
+        // Move the ticket to "ClosedTickets"
         closedRef.set(event.snapshot.value).then((_) {
           // Remove the ticket from "ActiveTickets"
           activeRef.remove().then((_) {
@@ -57,56 +60,10 @@ class FirebaseRepo {
     });
   }
 
-  /*
-  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-
-  Future<OrderTicketModel?> fecthActiveTickets() async {
-    try {
-      final QuerySnapshot result = await firebaseFirestore
-          .collection(AppStrings.tickets)
-          .where("isActive", isEqualTo: true)
-          .get();
-      final List<DocumentSnapshot> documents = result.docs;
-      if (documents.isNotEmpty) {
-        List<OrderTicketModel> activeticketsList = [];
-        for (var element in documents) {
-          OrderTicketModel patient =
-              OrderTicketModel.fromJson(element.data() as Map<String, dynamic>);
-          activeticketsList.add(patient);
-        }
-        return activeticketsList[0];
-      }
-
-      firebaseFirestore
-          .collection(AppStrings.tickets)
-          .where("isActive", isEqualTo: true)
-          .snapshots()
-          .listen((QuerySnapshot snapshot) {
-        for (var change in snapshot.docChanges) {
-          switch (change.type) {
-            case DocumentChangeType.added:
-              print('New active ticket: ${change.doc.data()}');
-              break;
-            case DocumentChangeType.modified:
-              print('Updated active ticket: ${change.doc.data()}');
-              break;
-            case DocumentChangeType.removed:
-              print('Removed active ticket: ${change.doc.data()}');
-              break;
-          }
-        }
-      });
-    } catch (e, s) {
+  Future<OrderTicketModel?> fecthClosedTickets() async {
+    try {} catch (e, s) {
       logger.e(e, stackTrace: s);
     }
     return null;
   }
-
-  Future<void> updatetickets(OrderTicketModel ticketData) async {
-    await firebaseFirestore
-        .collection(AppStrings.tickets)
-        .doc(ticketData.ticketId)
-        .set(ticketData.toJson());
-  }
-*/
 }
