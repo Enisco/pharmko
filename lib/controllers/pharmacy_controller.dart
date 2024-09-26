@@ -14,6 +14,7 @@ import 'package:pharmko/shared/logger.dart';
 
 class PharmacyController extends MainController {
   OrderTicketModel? activeTicket;
+  List<OrderTicketModel?>? closedTicketsList;
 
   bool loading = false;
 
@@ -86,6 +87,13 @@ class PharmacyController extends MainController {
     );
     logger.f("New ticket: ${ticket.toJson()}");
     FirebaseRepo().createTicket(ticket);
+  }
+
+  fetchAllClosedTickets() async {
+    loading = true;
+    closedTicketsList = await FirebaseRepo().fecthClosedTickets();
+    stopLoading();
+    update();
   }
 
   load() {

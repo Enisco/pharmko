@@ -305,26 +305,31 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           CustomButton(
             height: 30,
             color: dispatched ? Colors.teal : Colors.grey,
-            onPressed: dispatched
+            onPressed: ticket.closed == true
                 ? () {
-                    logger.f("Track clicked");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ViewersMapView(
-                          start: LatLng(ticket.deliverer!.latitude!,
-                              ticket.deliverer!.longitude!),
-                          destination: LatLng(ticket.buyer!.latitude!,
-                              ticket.buyer!.longitude!),
-                        ),
-                      ),
-                    );
+                    Fluttertoast.showToast(msg: "Tracking has ended");
                   }
-                : () {
-                    logger.w("Package not yet dispatched");
-                  },
+                : dispatched
+                    ? () {
+                        logger.f("Track clicked");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewersMapView(
+                              start: LatLng(ticket.deliverer!.latitude!,
+                                  ticket.deliverer!.longitude!),
+                              destination: LatLng(ticket.buyer!.latitude!,
+                                  ticket.buyer!.longitude!),
+                            ),
+                          ),
+                        );
+                      }
+                    : () {
+                        Fluttertoast.showToast(
+                            msg: "Package not yet dispatched");
+                      },
             child: Text(
-              "Track package",
+              ticket.closed == true ? "Tracking ended" : "Track package",
               style: AppStyles.regularStyle(color: Colors.white),
             ),
           ),

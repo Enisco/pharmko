@@ -14,16 +14,16 @@ class ViewersMapService extends MainController {
     startLocation = start;
     destinationLocation = destination;
     try {
-      final inParts = ["AIzaSyBhtQ0iYIlBmrs2exAk", "53MReal7Wdv9DM"];
-      final googleApiKeyJoined = '${inParts[0]}-${inParts[1]}';
-      logger.f("googleApiKeyJoined: $googleApiKeyJoined");
+      final inParts = ["AIzaSyD1ZDheziyou3gJlSb", "qtnlR6mitN2e0EGU"];
+      final mapApiKeyJoined = '${inParts[0]}-${inParts[1]}';
+      logger.f("googleApiKeyJoined: $mapApiKeyJoined");
 
       final response = await Dio().get(
         'https://maps.googleapis.com/maps/api/directions/json',
         queryParameters: {
           'origin': '${start.latitude},${start.longitude}',
           'destination': '${destination.latitude},${destination.longitude}',
-          'key': googleApiKeyJoined,
+          'key': mapApiKeyJoined,
           'mode': 'driving',
         },
       );

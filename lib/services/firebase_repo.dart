@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/instance_manager.dart';
 import 'package:pharmko/components/strings.dart';
@@ -60,10 +62,25 @@ class FirebaseRepo {
     });
   }
 
-  Future<OrderTicketModel?> fecthClosedTickets() async {
-    try {} catch (e, s) {
+  Future<List<OrderTicketModel?>> fecthClosedTickets() async {
+    try {
+      DatabaseReference ref = FirebaseDatabase.instance.ref("ClosedTickets");
+      // DataSnapshot snapshot = await ref.once();
+      DatabaseEvent event = await ref.once();
+
+      List<OrderTicketModel> closedTickets = [];
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          closedTickets.add(orderTicketModelFromJson(jsonEncode(value)));
+        });
+      }
+      logger.f("Closed Tickets: ${closedTickets.length}");
+      return closedTickets;
+    } catch (e, s) {
       logger.e(e, stackTrace: s);
     }
-    return null;
+    return [];
   }
 }
