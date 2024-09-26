@@ -64,12 +64,12 @@ class _ViewersMapViewState extends State<ViewersMapView> {
               Marker(
                 markerId: const MarkerId('start'),
                 position: controller.startLocation!,
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueBlue),
               ),
               Marker(
                 markerId: const MarkerId('destination'),
                 position: controller.destinationLocation!,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueRed),
               ),
             },
             polylines: controller.polylines,

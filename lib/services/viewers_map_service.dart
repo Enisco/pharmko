@@ -1,10 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:pharmko/controllers/main_controller.dart';
 import 'package:pharmko/shared/logger.dart';
+
+Logger prettyPrinter = Logger(printer: PrettyPrinter(lineLength: 100000));
 
 class ViewersMapService extends MainController {
   LatLng? startLocation, destinationLocation;
@@ -15,8 +20,8 @@ class ViewersMapService extends MainController {
     destinationLocation = destination;
     try {
       final inParts = ["AIzaSyD1ZDheziyou3gJlSb", "qtnlR6mitN2e0EGU"];
-      final mapApiKeyJoined = '${inParts[0]}-${inParts[1]}';
-      logger.f("googleApiKeyJoined: $mapApiKeyJoined");
+      final mapApiKeyJoined = '${inParts[0]}${inParts[1]}';
+      logger.f("mapApiKeyJoined: $mapApiKeyJoined");
 
       final response = await Dio().get(
         'https://maps.googleapis.com/maps/api/directions/json',
@@ -29,13 +34,20 @@ class ViewersMapService extends MainController {
       );
 
       if (response.statusCode == 200) {
-        logger.w("Routes Data: ${response.data}");
         final routes = response.data['routes'];
-        logger.f("Routes Data: $routes");
+        final steps = routes[0]['legs'][0]['steps'];
+        logger.w("Routes Data: $routes");
+        logger.f("steps Data: ${jsonEncode(steps)}");
 
         if (routes.isNotEmpty) {
-          final data = routes[0]['overview_polyline']['points'];
-          final points = decodePolyline(data);
+          List<LatLng> points = [];
+          for (var step in steps) {
+            points.add(LatLng(
+              step['start_location']['lat'],
+              step['start_location']['lng'],
+            ));
+          }
+          logger.w('Points: ${points.length} -- ${points[0]}');
 
           polylines.clear();
           polylines.add(Polyline(
