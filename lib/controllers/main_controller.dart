@@ -8,10 +8,16 @@ import 'package:intl/intl.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:pharmko/components/strings.dart';
+import 'package:pharmko/services/local_notif_services.dart';
+import 'package:pharmko/shared/logger.dart';
 
 class MainController extends GetxController {
+  LocalNotificationServices localNotificationServices =
+      LocalNotificationServices();
+
   var receivedMessage = '0';
   String? temperature, humidity;
+  double temperatureLimit = 25, humidityLimit = 60;
 
   String getLastTime() {
     DateTime now = DateTime.now();
@@ -91,6 +97,29 @@ class MainController extends GetxController {
           List<String> receivedData = receivedMessage.split(',');
           temperature = receivedData[0];
           humidity = receivedData[1];
+
+          if (temperature != null &&
+              double.parse(temperature!) > temperatureLimit) {
+            logger.w("Overtemperature");
+            localNotificationServices.showNotification(
+              title: "Warning",
+              message: "Overtemperature: $temperature ℃. Do the needful!",
+            );
+            update();
+          } else {
+            print('Temperature is normal');
+          }
+
+          if (humidity != null && double.parse(humidity!) > humidityLimit) {
+            logger.w("Humidity is now too much");
+            localNotificationServices.showNotification(
+              title: "Warning",
+              message: "Humidity has exceeded $humidityLimit%. Do the needful!",
+            );
+            update();
+          } else {
+            print('Humidity is normal');
+          }
 
           update();
         }) ??
