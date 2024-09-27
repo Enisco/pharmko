@@ -69,8 +69,8 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           _milestoneWidget(90, ticket.buyer != null),
           _milestoneWidget(75, (ticket.medications ?? []).length >= 1),
           _milestoneWidget(70, ticket.payment?.paid == true),
-          _milestoneWidget(150, ticket.orderConfirmed == true),
-          _milestoneWidget(155, ticket.dispatched == true),
+          _milestoneWidget(240, ticket.orderConfirmed == true),
+          _milestoneWidget(185, ticket.dispatched == true),
           _milestoneWidget(
             1,
             currentUserRole == Roles.pharmacy
