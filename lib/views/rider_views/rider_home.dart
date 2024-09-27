@@ -23,7 +23,7 @@ class RiderHomePage extends StatelessWidget {
       init: RiderController(),
       initState: (state) {
         controller.refreshTicketData();
-        // controller.startLocationUpdates();
+        controller.startLocationUpdates();
       },
       builder: (ctxt) {
         return Scaffold(
