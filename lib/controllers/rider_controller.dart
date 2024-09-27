@@ -93,7 +93,11 @@ class RiderController extends MainController {
   }
 
   Future<void> startLocationUpdates() async {
-    await Geolocator.requestPermission();
+    if (await Geolocator.checkPermission() == LocationPermission.denied ||
+        await Geolocator.checkPermission() ==
+            LocationPermission.deniedForever) {
+      await Geolocator.requestPermission();
+    }
 
     LocationSettings locationSettings = const LocationSettings(
         accuracy: LocationAccuracy.high, distanceFilter: 10);
