@@ -3,10 +3,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
+import 'package:pharmko/controllers/main_controller.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/services/firebase_repo.dart';
@@ -26,6 +28,8 @@ class ActiveTicketWidget extends StatefulWidget {
 }
 
 class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
+  final controller = Get.put(MainController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -211,7 +215,7 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
   Widget _dispatchedDetailsCard(OrderTicketModel ticket) {
     final dispatched = ticket.dispatched == true;
     return CustomCurvedContainer(
-      height: 240,
+      height: 360,
       borderColor: dispatched ? Colors.teal : Colors.grey,
       width: screenWidth(context),
       child: Column(
@@ -333,6 +337,96 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
               style: AppStyles.regularStyle(color: Colors.white),
             ),
           ),
+          verticalSpacer(size: 8),
+          Divider(color: Colors.blueGrey.withOpacity(0.5)),
+          verticalSpacer(size: 5),
+          Text(
+            "Package Conditions",
+            style: AppStyles.headerStyle(
+                color: dispatched ? Colors.black : Colors.grey, fontSize: 16),
+          ),
+          verticalSpacer(size: 8),
+          GetBuilder<MainController>(
+              init: MainController(),
+              builder: (ctxt) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Container(
+                      width: screenWidth(context) * 0.3,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.green.withOpacity(0.2),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Temperature",
+                            style: AppStyles.lightStyle(
+                                fontSize: 14,
+                                color: dispatched ? Colors.black : Colors.grey),
+                          ),
+                          verticalSpacer(size: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                CupertinoIcons.thermometer,
+                                color: Colors.red,
+                              ),
+                              Text(
+                                " ${controller.temperature ?? 'Nil'} ℃",
+                                style: AppStyles.headerStyle(
+                                  color:
+                                      dispatched ? Colors.black : Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: screenWidth(context) * 0.3,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.green.withOpacity(0.2),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Humidity",
+                            style: AppStyles.lightStyle(
+                                fontSize: 14,
+                                color: dispatched ? Colors.black : Colors.grey),
+                          ),
+                          verticalSpacer(size: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                CupertinoIcons.drop,
+                                color: Colors.green,
+                              ),
+                              Text(
+                                " ${controller.humidity ?? 'Nil'} %",
+                                style: AppStyles.headerStyle(
+                                  color:
+                                      dispatched ? Colors.black : Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }),
         ],
       ),
     );

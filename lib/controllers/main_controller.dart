@@ -11,6 +11,7 @@ import 'package:pharmko/components/strings.dart';
 
 class MainController extends GetxController {
   var receivedMessage = '0';
+  String? temperature, humidity;
 
   String getLastTime() {
     DateTime now = DateTime.now();
@@ -87,7 +88,9 @@ class MainController extends GetxController {
           print(
               'Topic is <${c[0].topic}>, payload is => $receivedMessage => $valCheck');
 
-          // List<String> receivedData = receivedMessage.split(',');
+          List<String> receivedData = receivedMessage.split(',');
+          temperature = receivedData[0];
+          humidity = receivedData[1];
 
           update();
         }) ??
