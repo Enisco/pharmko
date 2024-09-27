@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:pharmko/components/strings.dart';
 import 'package:pharmko/services/local_notif_services.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -35,8 +34,7 @@ class MainController extends GetxController {
   );
   var pongCount = 0, connStatus = 0;
   final builder = MqttClientPayloadBuilder();
-  String pubTopic = 'pharmko/kenny/rider/others';
-  String subTopic = 'pharmko/kenny/others/rider';
+  String subTopic = 'pharmko/kenny/package';
 
   /// Functions
   Future<void> mqttConnect() async {
@@ -134,23 +132,23 @@ class MainController extends GetxController {
 //------------------------------------------------------------------------------
 
   void mqttSubscribe() {
-    // Subscribe to GsmClientTest/ledStatus
+    // Subscribe to subTopic
     print('Subscribing to the $subTopic topic');
-    client.subscribe(isRiderApp ? subTopic : pubTopic, MqttQos.atMostOnce);
+    client.subscribe(subTopic, MqttQos.atMostOnce);
   }
 
-  void mqttPublish(String msg) {
-    builder.clear();
-    builder.addString(msg);
+  // void mqttPublish(String msg) {
+  //   builder.clear();
+  //   builder.addString(msg);
 
-    // Publish it
-    print('Publishing message: $msg');
-    client.publishMessage(
-      isRiderApp ? pubTopic : subTopic,
-      MqttQos.exactlyOnce,
-      builder.payload!,
-    );
-  }
+  //   // Publish it
+  //   print('Publishing message: $msg');
+  //   client.publishMessage(
+  //     pubTopic,
+  //     MqttQos.exactlyOnce,
+  //     builder.payload!,
+  //   );
+  // }
 
   void mqttUnsubscribe() {
     client.unsubscribe(subTopic);
