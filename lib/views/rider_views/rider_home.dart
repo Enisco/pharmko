@@ -21,7 +21,10 @@ class RiderHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<RiderController>(
       init: RiderController(),
-      initState: (state) => controller.refreshTicketData(),
+      initState: (state) {
+        controller.refreshTicketData();
+        // controller.startLocationUpdates();
+      },
       builder: (ctxt) {
         return Scaffold(
           appBar: customAppbar("Pharmko Rider"),

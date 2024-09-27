@@ -1,7 +1,11 @@
+// ignore_for_file: unused_local_variable
+
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/instance_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pharmko/controllers/main_controller.dart';
@@ -86,6 +90,25 @@ class RiderController extends MainController {
     );
     logger.f("New ticket: ${ticket.toJson()}");
     FirebaseRepo().createTicket(ticket);
+  }
+
+  Future<void> startLocationUpdates() async {
+    await Geolocator.requestPermission();
+
+    LocationSettings locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high, distanceFilter: 10);
+
+    StreamSubscription<Position> streamSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position position) {
+      logger.w('Lat: ${position.latitude}, Long: ${position.longitude}');
+      if (activeTicket != null) {
+        final updatedDeliverer = activeTicket!.deliverer!.copyWith(
+            latitude: position.latitude, longitude: position.longitude);
+        FirebaseRepo()
+            .updateTicket(activeTicket!.copyWith(deliverer: updatedDeliverer));
+      }
+    });
   }
 
   load() {
