@@ -8,6 +8,7 @@ import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/patient_views/patient_home.dart';
 import 'package:pharmko/views/pharmacy_views/pharmacy_home.dart';
+import 'package:pharmko/views/rider_views/rider_home.dart';
 
 enum Roles { pharmacy, patient, rider }
 
@@ -45,7 +46,13 @@ Widget landingPageOptionsCard({
                   ),
                 );
               } else {
-                logger.e("Rider selected");
+                logger.i("Rider selected");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RiderHomePage(),
+                  ),
+                );
               }
             },
             child: Container(

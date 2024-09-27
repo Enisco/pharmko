@@ -57,8 +57,11 @@ class _ViewersMapViewState extends State<ViewersMapView> {
               mapController = controller;
             },
             initialCameraPosition: CameraPosition(
-              target: controller.startLocation!,
-              zoom: 10.0,
+              target: LatLng(
+                (widget.start.latitude + widget.destination.latitude) / 2,
+                (widget.start.longitude + widget.destination.longitude) / 2,
+              ),
+              zoom: 15.0,
             ),
             markers: {
               Marker(
