@@ -35,10 +35,13 @@ class LocalNotificationServices {
             linux: initializationSettingsLinux);
   }
 
-  showNotification({required String title, required String message}) async {
+  showNotification(
+      {required String title,
+      required String message,
+      required bool isTemp}) async {
     NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin
-        .show(0, title, message, notificationDetails, payload: '');
+        .show(isTemp ? 0 : 1, title, message, notificationDetails, payload: '');
   }
 }

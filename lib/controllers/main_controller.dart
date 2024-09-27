@@ -102,6 +102,7 @@ class MainController extends GetxController {
             localNotificationServices.showNotification(
               title: "Warning",
               message: "Overtemperature: $temperature ℃. Do the needful!",
+              isTemp: true,
             );
             update();
           } else {
@@ -113,6 +114,7 @@ class MainController extends GetxController {
             localNotificationServices.showNotification(
               title: "Warning",
               message: "Humidity has exceeded $humidityLimit%. Do the needful!",
+              isTemp: false,
             );
             update();
           } else {

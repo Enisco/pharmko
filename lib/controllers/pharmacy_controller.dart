@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/instance_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pharmko/controllers/main_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
@@ -12,7 +12,7 @@ import 'package:pharmko/services/location_service.dart';
 import 'package:pharmko/services/viewers_map_service.dart';
 import 'package:pharmko/shared/logger.dart';
 
-class PharmacyController extends MainController {
+class PharmacyController extends GetxController {
   OrderTicketModel? activeTicket;
   List<OrderTicketModel?>? closedTicketsList;
 

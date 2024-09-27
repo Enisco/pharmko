@@ -4,14 +4,15 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
-import 'package:pharmko/controllers/main_controller.dart';
 import 'package:pharmko/shared/logger.dart';
 
 Logger prettyPrinter = Logger(printer: PrettyPrinter(lineLength: 100000));
 
-class ViewersMapService extends MainController {
+class ViewersMapService extends GetxController {
   LatLng? startLocation, destinationLocation;
   final Set<Polyline> polylines = <Polyline>{};
 
@@ -63,6 +64,7 @@ class ViewersMapService extends MainController {
       }
     } catch (e) {
       logger.w('Error getting route: $e');
+      Fluttertoast.showToast(msg: "Error getting route! Retry");
     }
     update();
   }
