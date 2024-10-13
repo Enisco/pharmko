@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/controllers/main_controller.dart';
+import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/firebase_options.dart';
 import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/services/local_notif_services.dart';
-import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

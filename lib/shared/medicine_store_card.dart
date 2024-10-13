@@ -29,17 +29,17 @@ class _MedicineStoreCardState extends State<MedicineStoreCard> {
                 height: 75,
                 child: ListTile(
                   title: Text(
-                    widget.medicine.name,
+                    widget.medicine.name ?? '',
                     overflow: TextOverflow.ellipsis,
                     style: AppStyles.regularStyle(fontSize: 16)
                         .copyWith(height: 2.2),
                   ),
                   subtitle: Text(
-                    widget.medicine.description,
+                    widget.medicine.description ?? 'No description',
                     overflow: TextOverflow.ellipsis,
                   ),
                   trailing: Text(
-                    "₦${widget.medicine.amount.toStringAsFixed(2)}",
+                    "₦${widget.medicine.amount?.toStringAsFixed(2)}",
                     style: AppStyles.lightStyle().copyWith(fontSize: 14),
                   ),
                   onTap: () {

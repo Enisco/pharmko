@@ -4,13 +4,12 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/components/strings_helper.dart';
+import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/patient_views/patient_home.dart';
 import 'package:pharmko/views/pharmacy_views/pharmacy_home.dart';
 import 'package:pharmko/views/rider_views/rider_home.dart';
-
-enum Roles { pharmacy, patient, rider }
 
 Widget landingPageOptionsCard({
   required Roles role,
@@ -34,7 +33,7 @@ Widget landingPageOptionsCard({
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PharmacyHomePage(),
+                    builder: (context) => const PharmacyHomePage(),
                   ),
                 );
               } else if (role == Roles.patient) {

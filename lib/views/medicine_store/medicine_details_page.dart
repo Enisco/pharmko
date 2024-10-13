@@ -38,13 +38,13 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(widget.medicine.name),
+      appBar: customAppbar(widget.medicine.name ?? ''),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _detailsCard("Name:", widget.medicine.name),
+            _detailsCard("Name:", widget.medicine.name ?? ''),
             verticalSpacer(size: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,19 +55,19 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
                 ),
                 horizontalSpacer(size: 8),
                 Text(
-                  widget.medicine.description,
+                  widget.medicine.description ?? 'No description',
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
             verticalSpacer(size: 12),
             _detailsCard(
-                "Amount", '₦${widget.medicine.amount.toStringAsFixed(2)}'),
+                "Amount", '₦${widget.medicine.amount?.toStringAsFixed(2)}'),
             _detailsCard(
               "Expiry Date",
-              widget.medicine.expiryDate.toLocal().toString().split(' ')[0],
+              widget.medicine.expiryDate?.toLocal().toString().split(' ')[0] ?? DateTime.now().add(Duration(days: 150)).toLocal().toString().split(' ')[0],
             ),
-            _detailsCard("Dosage:", widget.medicine.dosage),
+            _detailsCard("Dosage:", widget.medicine.dosage ?? 'Ask physician'),
             verticalSpacer(size: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -55,13 +55,13 @@ class _CartCheckoutCardState extends State<CartCheckoutCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.medicine.name,
+                          widget.medicine.name ?? '',
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.regularStyle(fontSize: 16)
                               .copyWith(height: 2.2),
                         ),
                         Text(
-                          "₦${widget.medicine.amount.toStringAsFixed(2)}",
+                          "₦${widget.medicine.amount?.toStringAsFixed(2)}",
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.lightStyle().copyWith(fontSize: 14),
                         ),

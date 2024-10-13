@@ -9,6 +9,7 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/main_controller.dart';
+import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/pharmko_app.dart';
 import 'package:pharmko/services/firebase_repo.dart';
@@ -17,7 +18,6 @@ import 'package:pharmko/shared/custom_button.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/maps_view/viewers_map.dart';
 import 'package:pharmko/views/widgets/dispatch_bottomsheet.dart';
-import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
 class ActiveTicketWidget extends StatefulWidget {
   final OrderTicketModel ticketData;

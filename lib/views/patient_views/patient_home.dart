@@ -5,6 +5,7 @@ import 'package:get/instance_manager.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/patient_controller.dart';
+import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
 import 'package:pharmko/views/widgets/active_ticket_view.dart';
@@ -39,7 +40,9 @@ class PatientHomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MedicineStorePage(),
+                  builder: (context) => const MedicineStorePage(
+                    role: Roles.patient,
+                  ),
                 ),
               );
             },

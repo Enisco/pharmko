@@ -31,7 +31,7 @@ class PharmacyStoreController extends GetxController {
       final List<dynamic> jsonList = jsonDecode(jsonString);
       parsedMedicineList =
           jsonList.map((json) => MedicineModel.fromJson(json)).toList();
-      parsedMedicineList.sort((a, b) => a.name.compareTo(b.name));
+      parsedMedicineList.sort((a, b) => (a.name ?? '').compareTo(b.name ?? ''));
       logger.f("Last Medicine: ${parsedMedicineList.last.toJson()}");
     } catch (e) {
       logger.w("Error occured");

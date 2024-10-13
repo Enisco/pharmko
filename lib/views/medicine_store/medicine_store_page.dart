@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/controllers/store_controller.dart';
+import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/shared/medicine_store_card.dart';
 import 'package:pharmko/views/medicine_store/cart_checkout_page.dart';
 
 class MedicineStorePage extends StatefulWidget {
-  const MedicineStorePage({super.key});
+  const MedicineStorePage({super.key, required this.role});
+  final Roles? role;
 
   @override
   State<MedicineStorePage> createState() => _MedicineStorePageState();
@@ -51,7 +53,9 @@ class _MedicineStorePageState extends State<MedicineStorePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const CartCheckoutPage(),
+                        builder: (context) => CartCheckoutPage(
+                          role: widget.role,
+                        ),
                       ),
                     );
                   },
