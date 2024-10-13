@@ -5,10 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/instance_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
-import 'package:pharmko/services/location_service.dart';
 import 'package:pharmko/services/viewers_map_service.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -66,29 +64,6 @@ class PharmacyController extends GetxController {
     update();
   }
 
-  createNewTicket({
-    required String message,
-    required Buyer buyerData,
-    required List<MedicineModel?> cartMedicineList,
-    required double amountPaid,
-  }) async {
-    final currentUserLocation = await LocationService().getCurrentLocation();
-    OrderTicketModel ticket = OrderTicketModel(
-      ticketId: generateRandomString(),
-      message: message,
-      timeCreated: DateTime.now(),
-      isActive: true,
-      medications: cartMedicineList,
-      buyer: buyerData.copyWith(
-        latitude: currentUserLocation?.latitude,
-        longitude: currentUserLocation?.longitude,
-      ),
-      payment: Payment(amount: amountPaid, paid: true),
-    );
-    logger.f("New ticket: ${ticket.toJson()}");
-    FirebaseRepo().createTicket(ticket);
-  }
-
   fetchAllClosedTickets() async {
     loading = true;
     closedTicketsList = await FirebaseRepo().fecthClosedTickets();
@@ -107,17 +82,10 @@ class PharmacyController extends GetxController {
     );
   }
 
-// Function to generate a random integer between 100 and 500
+  // Function to generate a random integer between 100 and 500
   int generateRandomItemsRemaining() {
     final random = Random();
     return 100 + random.nextInt(401); // Random number between 100 and 500
-  }
-
-  Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {
-    logger.w("Uploading medicines");
-    DatabaseReference databaseRef =
-        FirebaseDatabase.instance.ref().child("inventory");
-    await databaseRef.push().set(newMedicine.toJson());
   }
 
   load() {

@@ -140,6 +140,12 @@ class _CartCheckoutPageState extends State<CartCheckoutPage> {
               InkWell(
                 onTap: () {
                   logger.f('Confirm Sales');
+                  controller.createSalesTicket(
+                    controller.totalCost,
+                    controller.cartMedicineList,
+                  );
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 child: CustomCurvedContainer(
                   width: screenWidth(context) * 0.42,

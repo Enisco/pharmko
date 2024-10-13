@@ -9,10 +9,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/instance_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
-import 'package:pharmko/services/location_service.dart';
 import 'package:pharmko/services/viewers_map_service.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -67,29 +65,6 @@ class RiderController extends GetxController {
       Get.put(ViewersMapService()).getRoute(current, destination);
     }
     update();
-  }
-
-  createNewTicket({
-    required String message,
-    required Buyer buyerData,
-    required List<MedicineModel?> cartMedicineList,
-    required double amountPaid,
-  }) async {
-    final currentUserLocation = await LocationService().getCurrentLocation();
-    OrderTicketModel ticket = OrderTicketModel(
-      ticketId: generateRandomString(),
-      message: message,
-      timeCreated: DateTime.now(),
-      isActive: true,
-      medications: cartMedicineList,
-      buyer: buyerData.copyWith(
-        latitude: currentUserLocation?.latitude,
-        longitude: currentUserLocation?.longitude,
-      ),
-      payment: Payment(amount: amountPaid, paid: true),
-    );
-    logger.f("New ticket: ${ticket.toJson()}");
-    FirebaseRepo().createTicket(ticket);
   }
 
   Future<void> startLocationUpdates() async {

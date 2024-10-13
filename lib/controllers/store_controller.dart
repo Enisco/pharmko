@@ -1,5 +1,8 @@
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+import 'package:pharmko/controllers/patient_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
+import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -53,6 +56,27 @@ class PharmacyStoreController extends GetxController {
     }
     logger.f("Total cost: $totalCost");
     update();
+  }
+
+  void createSalesTicket(
+      double amountPaid, List<MedicineModel?> cartMedicineList) {
+    // Create sales ticket
+    Get.put(PatientController()).createNewTicket(
+      message: '',
+      buyerData: Buyer(),
+      amountPaid: amountPaid,
+      cartMedicineList: cartMedicineList,
+    );
+
+    // Update Inventory
+    FirebaseRepo().updateInventory(cartMedicineList);
+  }
+
+  Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {
+    logger.w("Uploading medicines");
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.ref().child("inventory");
+    await databaseRef.push().set(newMedicine.toJson());
   }
 
   load() {

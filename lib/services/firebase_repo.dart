@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/instance_manager.dart';
 import 'package:pharmko/components/strings.dart';
 import 'package:pharmko/controllers/store_controller.dart';
@@ -110,5 +113,40 @@ class FirebaseRepo {
       logger.e(e, stackTrace: s);
     }
     return [];
+  }
+
+  Future<void> updateInventory(List<MedicineModel?> medicines) async {
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.ref().child("inventory");
+
+    for (var medicine in medicines) {
+      DatabaseReference medicineRef =
+          databaseRef.orderByChild("id").equalTo(medicine?.id).ref;
+
+      DataSnapshot snapshot = await medicineRef.get();
+      if (snapshot.exists) {
+        snapshot.children.forEach((element) async {
+          Map<String, dynamic> medicineData =
+              Map<String, dynamic>.from(element.value as Map<dynamic, dynamic>);
+
+          int currentItemsRemaining = medicineData["itemsRemaining"] ?? 0;
+          int updatedItemsRemaining =
+              currentItemsRemaining - (medicine?.orderQuantity ?? 1);
+
+          // Ensure the updated count isn't negative
+          if (updatedItemsRemaining < 0) {
+            updatedItemsRemaining = 0;
+          }
+
+          // Update the specific medicine entry in Firebase
+          await element.ref.update({
+            "itemsRemaining": updatedItemsRemaining,
+          });
+          Fluttertoast.showToast(msg: 'Inventory Updated');
+        });
+      } else {
+        logger.w("Medicine with id ${medicine?.id} not found.");
+      }
+    }
   }
 }

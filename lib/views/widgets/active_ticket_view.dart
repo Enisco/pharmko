@@ -472,6 +472,10 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                             logger.i("Confirm Order");
                             FirebaseRepo().updateTicket(
                                 ticket.copyWith(orderConfirmed: true));
+
+                            // Update Inventory
+                            FirebaseRepo()
+                                .updateInventory(ticket.medications ?? []);
                           },
                           width: 80,
                           height: 25,
