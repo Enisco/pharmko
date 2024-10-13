@@ -34,7 +34,7 @@ class MedicineModel {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      amount: double.parse(((json['amount']) * 40.00).toStringAsFixed(2)),
+      amount: double.parse(((json['amount'])).toStringAsFixed(2)),
       expiryDate: DateTime.parse(json['expiryDate']),
       dosage: json['dosage'],
       caution: json['caution'],

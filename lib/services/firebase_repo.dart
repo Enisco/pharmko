@@ -1,12 +1,13 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/instance_manager.dart';
 import 'package:pharmko/components/strings.dart';
 import 'package:pharmko/controllers/store_controller.dart';
+import 'package:pharmko/data/medicine_list_data.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/shared/logger.dart';
@@ -66,6 +67,22 @@ class FirebaseRepo {
     });
   }
 
+  Future<void> saveSalesTicket(OrderTicketModel ticket) async {
+    // Deactivate ticket
+    ticket = ticket.copyWith(
+      isActive: false,
+      closed: true,
+      isWalkInSales: true,
+      orderConfirmed: true,
+      orderDelivered: true,
+      timeCreated: DateTime.now(),
+    );
+    // Create Closed Sales Ticket
+    DatabaseReference closedRef =
+        FirebaseDatabase.instance.ref("ClosedTickets/${ticket.ticketId}");
+    await closedRef.set(ticket.toJson());
+  }
+
   Future<List<OrderTicketModel?>> fecthClosedTickets() async {
     try {
       DatabaseReference ref = FirebaseDatabase.instance.ref("ClosedTickets");
@@ -107,7 +124,8 @@ class FirebaseRepo {
           inventoryList.add(medicineModelFromJson(jsonEncode(value)));
         });
       }
-      logger.f("Inventory List: ${inventoryList.length}");
+      logger.f(
+          "Inventory List: ${inventoryList.length}, \n${inventoryList.first.toJson()} ");
       return inventoryList;
     } catch (e, s) {
       logger.e(e, stackTrace: s);
@@ -115,38 +133,87 @@ class FirebaseRepo {
     return [];
   }
 
-  Future<void> updateInventory(List<MedicineModel?> medicines) async {
+  List<MedicineModel?> updateInventoryBasedOnCart(
+      List<MedicineModel?> cartList, List<MedicineModel?> inventoryList) {
+    // Create a copy of the inventory list to avoid modifying the list while iterating
+    List<MedicineModel?> updatedInventoryList = List.from(inventoryList);
+
+    for (var cartItem in cartList) {
+      // Find the matching item in the copied inventory list by comparing the "id"
+      var inventoryItem = updatedInventoryList.firstWhere(
+        (item) => item?.id == cartItem?.id,
+        orElse: () => throw Exception(
+            'Item with id ${cartItem?.id} not found in inventory'),
+      );
+
+      // Subtract the orderQuantity from the itemsRemaining in the copied inventory list
+      inventoryItem?.itemsRemaining =
+          (inventoryItem.itemsRemaining ?? 0) - (cartItem?.orderQuantity ?? 1);
+
+      // Ensure itemsRemaining does not go below zero
+      if ((inventoryItem?.itemsRemaining ?? 0) < 0) {
+        inventoryItem?.itemsRemaining = 0;
+      }
+    }
+
+    // Return the updated inventory list
+    return updatedInventoryList;
+  }
+
+  Future<void> updateInventoryInDatabase(
+      List<MedicineModel?> updatedInventoryList) async {
+    // Reference to Firebase Realtime Database "inventory" collection
     DatabaseReference databaseRef =
         FirebaseDatabase.instance.ref().child("inventory");
 
-    for (var medicine in medicines) {
-      DatabaseReference medicineRef =
-          databaseRef.orderByChild("id").equalTo(medicine?.id).ref;
+    // Step 1: Delete the entire inventory repository in Firebase
+    await databaseRef.remove();
 
-      DataSnapshot snapshot = await medicineRef.get();
-      if (snapshot.exists) {
-        snapshot.children.forEach((element) async {
-          Map<String, dynamic> medicineData =
-              Map<String, dynamic>.from(element.value as Map<dynamic, dynamic>);
-
-          int currentItemsRemaining = medicineData["itemsRemaining"] ?? 0;
-          int updatedItemsRemaining =
-              currentItemsRemaining - (medicine?.orderQuantity ?? 1);
-
-          // Ensure the updated count isn't negative
-          if (updatedItemsRemaining < 0) {
-            updatedItemsRemaining = 0;
-          }
-
-          // Update the specific medicine entry in Firebase
-          await element.ref.update({
-            "itemsRemaining": updatedItemsRemaining,
-          });
-          Fluttertoast.showToast(msg: 'Inventory Updated');
-        });
-      } else {
-        logger.w("Medicine with id ${medicine?.id} not found.");
+    // Step 2: Re-upload the updated list to Firebase
+    for (var medicine in updatedInventoryList) {
+      if (medicine != null) {
+        await databaseRef.push().set(medicine.toJson());
+        Future.delayed(const Duration(milliseconds: 10));
       }
+    }
+  }
+
+  Future<void> updateInventory(
+    List<MedicineModel?> cartList,
+    List<MedicineModel?> inventoryList,
+  ) async {
+    final List<MedicineModel?> updatedInventoryList =
+        updateInventoryBasedOnCart(cartList, inventoryList);
+
+    await updateInventoryInDatabase(updatedInventoryList);
+  }
+
+  String generateRandomId(int length) {
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(length,
+          (_) => characters.codeUnitAt(random.nextInt(characters.length))),
+    );
+  }
+
+  int generateRandomItemsRemaining() {
+    final random = Random();
+    return 100 + random.nextInt(401); // Random number between 100 and 500
+  }
+
+  Future<void> uploadMedicineList() async {
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.ref().child("inventory");
+
+    for (var medicine in medicineListJson) {
+      var modifiableMedicine = Map<String, dynamic>.from(medicine);
+
+      modifiableMedicine["id"] = generateRandomId(12);
+      modifiableMedicine["itemsRemaining"] = generateRandomItemsRemaining();
+
+      await databaseRef.push().set(modifiableMedicine);
     }
   }
 }

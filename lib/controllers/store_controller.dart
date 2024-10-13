@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/controllers/patient_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
@@ -58,18 +59,23 @@ class PharmacyStoreController extends GetxController {
     update();
   }
 
-  void createSalesTicket(
-      double amountPaid, List<MedicineModel?> cartMedicineList) {
+  Future<void> createSalesTicket(
+      double amountPaid, List<MedicineModel?> cartMedicineList) async {
+    load();
     // Create sales ticket
-    Get.put(PatientController()).createNewTicket(
-      message: '',
-      buyerData: Buyer(),
-      amountPaid: amountPaid,
-      cartMedicineList: cartMedicineList,
+    OrderTicketModel salesTicket = OrderTicketModel(
+      ticketId: generateRandomString(),
+      medications: cartMedicineList,
+      payment: Payment(amount: amountPaid, paid: true),
     );
+    logger.f("Sales ticket: ${salesTicket.toJson()}");
+    await FirebaseRepo().saveSalesTicket(salesTicket);
 
     // Update Inventory
-    FirebaseRepo().updateInventory(cartMedicineList);
+    await FirebaseRepo().updateInventory(cartMedicineList, medicineList);
+    stopLoading();
+    Get.put(PharmacyStoreController()).resetTicketCreationData();
+    Fluttertoast.showToast(msg: "Imnventory Updated Successfully");
   }
 
   Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {

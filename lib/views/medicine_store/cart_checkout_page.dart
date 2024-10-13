@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -101,73 +103,79 @@ class _CartCheckoutPageState extends State<CartCheckoutPage> {
   }
 
   Widget salesConfirmationCard(PharmacyStoreController controller) {
-    return Container(
-      height: 110,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-        ),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          horizontalSpacer(size: 5),
-          Text(
-            "Total: ${controller.cartMedicineList.length} items, ₦${controller.totalCost.toStringAsFixed(2)}",
-            style: AppStyles.regularStyle(fontSize: 18),
+    if (controller.loading == true || controller.totalCost <= 0) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return Container(
+        height: 110,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
           ),
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  showCancelSalesConfirmationSheet();
-                },
-                child: CustomCurvedContainer(
-                  width: screenWidth(context) * 0.42,
-                  height: 50,
-                  fillColor: Colors.white,
-                  borderColor: Colors.teal,
-                  child: Center(
-                    child: Text(
-                      "Cancel",
-                      style: AppStyles.regularStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  logger.f('Confirm Sales');
-                  controller.createSalesTicket(
-                    controller.totalCost,
-                    controller.cartMedicineList,
-                  );
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: CustomCurvedContainer(
-                  width: screenWidth(context) * 0.42,
-                  height: 50,
-                  fillColor: Colors.teal,
-                  borderColor: Colors.teal,
-                  child: Center(
-                    child: Text(
-                      "Confirm",
-                      style: AppStyles.regularStyle(
-                        color: Colors.white,
-                        fontSize: 18,
+          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            horizontalSpacer(size: 5),
+            Text(
+              "Total: ${controller.cartMedicineList.length} items, ₦${controller.totalCost.toStringAsFixed(2)}",
+              style: AppStyles.regularStyle(fontSize: 18),
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    showCancelSalesConfirmationSheet();
+                  },
+                  child: CustomCurvedContainer(
+                    width: screenWidth(context) * 0.42,
+                    height: 50,
+                    fillColor: Colors.white,
+                    borderColor: Colors.teal,
+                    child: Center(
+                      child: Text(
+                        "Cancel",
+                        style: AppStyles.regularStyle(fontSize: 18),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                InkWell(
+                  onTap: () async {
+                    logger.f('Confirm Sales');
+                    await controller.createSalesTicket(
+                      controller.totalCost,
+                      controller.cartMedicineList,
+                    );
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: CustomCurvedContainer(
+                    width: screenWidth(context) * 0.42,
+                    height: 50,
+                    fillColor: Colors.teal,
+                    borderColor: Colors.teal,
+                    child: Center(
+                      child: Text(
+                        "Confirm",
+                        style: AppStyles.regularStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   showCancelSalesConfirmationSheet() {

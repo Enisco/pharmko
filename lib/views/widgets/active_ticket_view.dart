@@ -9,6 +9,7 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/main_controller.dart';
+import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/pharmko_app.dart';
@@ -474,8 +475,10 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
                                 ticket.copyWith(orderConfirmed: true));
 
                             // Update Inventory
-                            FirebaseRepo()
-                                .updateInventory(ticket.medications ?? []);
+                            FirebaseRepo().updateInventory(
+                              ticket.medications ?? [],
+                              Get.put(PharmacyStoreController()).medicineList,
+                            );
                           },
                           width: 80,
                           height: 25,

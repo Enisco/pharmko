@@ -1,6 +1,4 @@
-
-const medicineListJson =
- [
+const medicineListJson = [
   {
     "name": "Paracetamol",
     "description": "Pain reliever and fever reducer.",
@@ -91,7 +89,8 @@ const medicineListJson =
   },
   {
     "name": "Losartan",
-    "description": "Angiotensin II receptor blocker (ARB) for high blood pressure.",
+    "description":
+        "Angiotensin II receptor blocker (ARB) for high blood pressure.",
     "amount": 13.29,
     "expiryDate": "2025-07-07",
     "dosage": "50mg once daily",
@@ -209,6 +208,7 @@ const medicineListJson =
     "dosage": "100mg twice daily",
     "caution": "Avoid sun exposure."
   },
+  /*
   {
     "name": "Warfarin",
     "description": "Anticoagulant used to prevent blood clots.",
@@ -649,5 +649,5 @@ const medicineListJson =
     "dosage": "0.25mcg once daily",
     "caution": "Monitor calcium levels regularly."
   }
-]
-;
+  */
+];
