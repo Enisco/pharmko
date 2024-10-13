@@ -32,7 +32,8 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
       init: PharmacyController(),
       builder: (ctxt) {
         return Scaffold(
-          appBar: customAppbar("Transaction Records"),
+          backgroundColor: Colors.white,
+          appBar: customAppbar("Sales Records"),
           body: Column(
             children: [
               controller.loading == true
@@ -61,35 +62,73 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
   Widget _closedTicketCard(OrderTicketModel ticket) {
     return InkWell(
       onTap: () {
-        logger.w("Clicked ${ticket.buyer?.name} ticket");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ClosedTicketsView(ticket: ticket),
-          ),
-        );
+        if (ticket.isWalkInSales == true) {
+          logger.w("Do nothing");
+        } else {
+          logger.w("Clicked ${ticket.buyer?.name} ticket");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ClosedTicketsView(ticket: ticket),
+            ),
+          );
+        }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
-        height: 60,
+        height: 75,
         width: screenWidth(context),
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        decoration: BoxDecoration(
+          color: ticket.isWalkInSales == true
+              ? Colors.grey.withOpacity(0.15)
+              : Colors.white,
+          border: Border.all(
+            color: Colors.grey
+                .withOpacity(ticket.isWalkInSales == true ? 0.8 : 0.15),
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              ticket.buyer?.name ?? '',
-              style: AppStyles.regularStyle(
-                  fontSize: 17, color: Colors.teal.shade900),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ticket.buyer?.name ?? 'Walkin Customer',
+                  style: AppStyles.regularStyle(
+                      fontSize: 17,
+                      color: ticket.isWalkInSales == true
+                          ? Colors.grey
+                          : Colors.teal.shade900),
+                ),
+                Text(
+                  DateFormat('MMMM d, yyyy, h:mm a').format(
+                    ticket.timeCreated ?? DateTime.now(),
+                  ),
+                  style: AppStyles.lightStyle(),
+                ),
+              ],
             ),
-            Text(
-              DateFormat('MMMM d, yyyy').format(
-                ticket.timeCreated ?? DateTime.now(),
-              ),
-              style: AppStyles.lightStyle(),
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "₦${((ticket.payment?.amount ?? 0) / 100).toStringAsFixed(2)}",
+                  style: AppStyles.regularStyle(fontSize: 14),
+                ),
+                Text(
+                  "${ticket.medications?.length} items",
+                  style: AppStyles.regularStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -104,7 +143,7 @@ class ClosedTicketsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(ticket.buyer?.name ?? ''),
+      appBar: customAppbar(ticket.buyer?.name ?? '', showLeading: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: ActiveTicketWidget(

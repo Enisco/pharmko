@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
+import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/medicine_store/medicine_details_page.dart';
 
 class MedicineStoreCard extends StatefulWidget {
@@ -43,6 +44,7 @@ class _MedicineStoreCardState extends State<MedicineStoreCard> {
                     style: AppStyles.lightStyle().copyWith(fontSize: 14),
                   ),
                   onTap: () {
+                    logger.w(widget.medicine.toJson());
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/instance_manager.dart';
 import 'package:pharmko/components/strings.dart';
 import 'package:pharmko/controllers/store_controller.dart';
+import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -73,11 +74,38 @@ class FirebaseRepo {
         Map<dynamic, dynamic> data =
             event.snapshot.value as Map<dynamic, dynamic>;
         data.forEach((key, value) {
-          closedTickets.add(orderTicketModelFromJson(jsonEncode(value)));
+          closedTickets
+              .add(orderTicketModelFromJson(jsonEncode(value)).copyWith(
+            orderConfirmed: true,
+            closed: true,
+            isActive: false,
+            orderDelivered: true,
+          ));
         });
       }
       logger.f("Closed Tickets: ${closedTickets.length}");
       return closedTickets;
+    } catch (e, s) {
+      logger.e(e, stackTrace: s);
+    }
+    return [];
+  }
+
+  Future<List<MedicineModel?>> fecthMedicinesInventory() async {
+    try {
+      DatabaseReference ref = FirebaseDatabase.instance.ref("inventory");
+      DatabaseEvent event = await ref.once();
+
+      List<MedicineModel> inventoryList = [];
+      if (event.snapshot.exists) {
+        Map<dynamic, dynamic> data =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          inventoryList.add(medicineModelFromJson(jsonEncode(value)));
+        });
+      }
+      logger.f("Inventory List: ${inventoryList.length}");
+      return inventoryList;
     } catch (e, s) {
       logger.e(e, stackTrace: s);
     }

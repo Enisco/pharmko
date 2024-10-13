@@ -17,11 +17,7 @@ class PharmacyActiveTicketPage extends StatelessWidget {
       initState: (state) => controller.refreshTicketData(),
       builder: (ctxt) {
         return Scaffold(
-          appBar: customAppbar(
-            "Active Ticket",
-            showActionIcon: true,
-            context: context,
-          ),
+          appBar: customAppbar("Active Ticket", context: context),
           body: controller.activeTicket == null
               ? Center(
                   child: Text(

@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:pharmko/data/medicine_list_data.dart';
 import 'package:pharmko/models/medicine_model.dart';
+import 'package:pharmko/services/firebase_repo.dart';
 import 'package:pharmko/shared/logger.dart';
 
 class PharmacyStoreController extends GetxController {
@@ -19,25 +17,12 @@ class PharmacyStoreController extends GetxController {
     logger.w("Reset data: ${cartMedicineList.length}, $totalCost");
   }
 
-  getMedicineList() {
-    medicineList = parseMedicineList(jsonEncode(medicineListJson));
-    updateController();
-  }
-
-  List<MedicineModel> parseMedicineList(String jsonString) {
-    load();
-    List<MedicineModel> parsedMedicineList = [];
-    try {
-      final List<dynamic> jsonList = jsonDecode(jsonString);
-      parsedMedicineList =
-          jsonList.map((json) => MedicineModel.fromJson(json)).toList();
-      parsedMedicineList.sort((a, b) => (a.name ?? '').compareTo(b.name ?? ''));
-      logger.f("Last Medicine: ${parsedMedicineList.last.toJson()}");
-    } catch (e) {
-      logger.w("Error occured");
-    }
+  getMedicineList() async {
+    loading = true;
+    medicineList = await FirebaseRepo().fecthMedicinesInventory();
+    medicineList.sort((a, b) => (a?.name ?? '').compareTo(b?.name ?? ''));
     stopLoading();
-    return parsedMedicineList;
+    updateController();
   }
 
   void updateCartItems(MedicineModel medicine) {

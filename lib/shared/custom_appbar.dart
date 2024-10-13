@@ -3,21 +3,27 @@ import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/views/pharmacy_views/closed_tickets_view.dart';
 
 PreferredSizeWidget customAppbar(String titleTExt,
-    {BuildContext? context, bool? showActionIcon}) {
+    {BuildContext? context, bool? showLeading = false, bool? showActionIcon}) {
   return AppBar(
     automaticallyImplyLeading: false,
-    leading: Builder(builder: (context) {
-      return IconButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        icon: const Icon(
-          Icons.chevron_left_rounded,
-          color: Colors.white,
-          size: 30,
-        ),
-      );
-    }),
+    leading: showLeading == true
+        ? Builder(builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.chevron_left_rounded,
+                color: Colors.white,
+                size: 30,
+              ),
+            );
+          })
+        : const Icon(
+            Icons.circle,
+            color: Colors.white,
+            size: 10,
+          ),
     leadingWidth: 30,
     title: Text(
       titleTExt,

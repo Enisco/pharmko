@@ -20,21 +20,17 @@ class _PharmacyHomePageState extends State<PharmacyHomePage>
   int _selectedIndex = 0;
 
   // List of section titles
-  final List<String> _sections = ['Home', 'Inventory', 'Tickets', 'Sales'];
+  final List<String> _sections = ['Home', 'Inventory', 'Sales'];
 
   // List of corresponding sections' widgets
   final List<Widget> _pages = [
-    // const Center(child: Icon(Icons.home, color: Colors.black)),
     PharmacyActiveTicketPage(),
     const Center(child: Text('Inventory Page')),
-    // const Center(child: Text('Tickets Page')),
     const ClosedTicketsListScreen(),
-    const Center(child: Text('Sales Page')),
   ];
   final List<IconData> _menuIcons = [
     Icons.home,
     Icons.shopping_cart_checkout_sharp,
-    Icons.recent_actors_outlined,
     Icons.money,
   ];
 

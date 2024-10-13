@@ -5,7 +5,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/instance_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pharmko/data/medicine_list_data.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
@@ -114,24 +113,11 @@ class PharmacyController extends GetxController {
     return 100 + random.nextInt(401); // Random number between 100 and 500
   }
 
-  Future<void> uploadMedicineList() async {
+  Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {
     logger.w("Uploading medicines");
-    // Reference to Firebase Realtime Database "inventory" collection
     DatabaseReference databaseRef =
         FirebaseDatabase.instance.ref().child("inventory");
-
-    // Loop through each item in the list and upload it to Firebase
-    for (var medicine in medicineListJson) {
-      // Create a modifiable copy of the map
-      var modifiableMedicine = Map<String, dynamic>.from(medicine);
-
-      // Add the random "id" and "itemsRemaining" keys to each medicine
-      modifiableMedicine["id"] = generateRandomId(12);
-      modifiableMedicine["itemsRemaining"] = generateRandomItemsRemaining();
-
-      // Push the item to Firebase (Firebase will auto-generate a unique key for each item)
-      await databaseRef.push().set(modifiableMedicine);
-    }
+    await databaseRef.push().set(newMedicine.toJson());
   }
 
   load() {

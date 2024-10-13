@@ -569,8 +569,10 @@ class _ActiveTicketWidgetState extends State<ActiveTicketWidget> {
           Row(
             children: [
               Text("Phone Number: ", style: AppStyles.lightStyle(fontSize: 14)),
-              Text(ticket.buyer?.phoneNumber ?? '',
-                  style: AppStyles.regularStyle()),
+              Text(
+                ticket.buyer?.phoneNumber ?? '',
+                style: AppStyles.regularStyle(),
+              ),
             ],
           ),
         ],

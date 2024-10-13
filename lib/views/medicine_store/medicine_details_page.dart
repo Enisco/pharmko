@@ -23,7 +23,9 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
 
   void _incrementQuantity() {
     setState(() {
-      _quantity++;
+      if (_quantity < (widget.medicine.itemsRemaining ?? 0)) {
+        _quantity++;
+      }
     });
   }
 
@@ -38,7 +40,7 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(widget.medicine.name ?? ''),
+      appBar: customAppbar(widget.medicine.name ?? '', showLeading: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -65,7 +67,12 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
                 "Amount", '₦${widget.medicine.amount?.toStringAsFixed(2)}'),
             _detailsCard(
               "Expiry Date",
-              widget.medicine.expiryDate?.toLocal().toString().split(' ')[0] ?? DateTime.now().add(Duration(days: 150)).toLocal().toString().split(' ')[0],
+              widget.medicine.expiryDate?.toLocal().toString().split(' ')[0] ??
+                  DateTime.now()
+                      .add(const Duration(days: 150))
+                      .toLocal()
+                      .toString()
+                      .split(' ')[0],
             ),
             _detailsCard("Dosage:", widget.medicine.dosage ?? 'Ask physician'),
             verticalSpacer(size: 12),
@@ -84,58 +91,80 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
               ],
             ),
             verticalSpacer(size: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Quantity:",
-                  style: AppStyles.headerStyle(color: Colors.black),
-                ),
-                horizontalSpacer(size: 8),
-                _quantityCounter(),
-              ],
-            ),
+            (widget.medicine.itemsRemaining ?? 0) <= 0
+                ? Center(
+                    child: Text(
+                      'Out of stock',
+                      style: TextStyle(
+                          fontSize: 13, color: Colors.orange.shade800),
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Order Quantity:",
+                        style: AppStyles.headerStyle(color: Colors.black),
+                      ),
+                      horizontalSpacer(size: 8),
+                      _quantityCounter(),
+                    ],
+                  ),
+            verticalSpacer(size: 5),
+            (widget.medicine.itemsRemaining ?? 0) <= 0
+                ? const SizedBox.shrink()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        ' ${widget.medicine.itemsRemaining} items remaining',
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
           ],
         ),
       ),
-      bottomNavigationBar: InkWell(
-        onTap: () {
-          final medicineToCart = widget.medicine;
-          medicineToCart.orderQuantity = _quantity;
-          logger.f("medicineToCart: ${medicineToCart.toJson()}");
-          controller.updateCartItems(medicineToCart);
-          Navigator.pop(context);
-        },
-        child: Container(
-          width: 200,
-          height: 60,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-            color: Colors.teal,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                CupertinoIcons.cart_badge_plus,
-                color: Colors.white,
-                size: 22,
-              ),
-              horizontalSpacer(size: 5),
-              Text(
-                "Add to Cart",
-                style: AppStyles.regularStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+      bottomNavigationBar: (widget.medicine.itemsRemaining ?? 0) <= 0
+          ? const SizedBox.shrink()
+          : InkWell(
+              onTap: () {
+                final medicineToCart = widget.medicine;
+                medicineToCart.orderQuantity = _quantity;
+                logger.f("medicineToCart: ${medicineToCart.toJson()}");
+                controller.updateCartItems(medicineToCart);
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 200,
+                height: 60,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  color: Colors.teal,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      CupertinoIcons.cart_badge_plus,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                    horizontalSpacer(size: 5),
+                    Text(
+                      "Add to Cart",
+                      style: AppStyles.regularStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

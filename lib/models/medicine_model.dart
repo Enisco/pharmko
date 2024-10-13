@@ -1,3 +1,10 @@
+import 'dart:convert';
+
+MedicineModel medicineModelFromJson(String str) =>
+    MedicineModel.fromJson(json.decode(str));
+
+String medicineModelToJson(MedicineModel data) => json.encode(data.toJson());
+
 class MedicineModel {
   String? id;
   String? name;
