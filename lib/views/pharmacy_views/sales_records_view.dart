@@ -3,21 +3,21 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
+import 'package:pharmko/components/strings_helper.dart';
 import 'package:pharmko/controllers/pharmacy_controller.dart';
 import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/widgets/active_ticket_view.dart';
 
-class ClosedTicketsListScreen extends StatefulWidget {
-  const ClosedTicketsListScreen({super.key});
+class SalesRecordsScreen extends StatefulWidget {
+  const SalesRecordsScreen({super.key});
 
   @override
-  State<ClosedTicketsListScreen> createState() =>
-      _ClosedTicketsListScreenState();
+  State<SalesRecordsScreen> createState() => _SalesRecordsScreenState();
 }
 
-class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
+class _SalesRecordsScreenState extends State<SalesRecordsScreen> {
   final controller = Get.put(PharmacyController());
 
   @override
@@ -37,12 +37,63 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
           body: Column(
             children: [
               controller.loading == true
+                  ? const SizedBox()
+                  : Container(
+                      width: screenWidth(context),
+                      height: 80,
+                      color: Colors.teal,
+                      padding: const EdgeInsets.fromLTRB(14, 10, 14, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Total sales for today (₦)",
+                                  style: AppStyles.lightStyle(
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  controller.todayTotal.toCommaSeparated(),
+                                  style: AppStyles.regularStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Total sales for this month (₦)",
+                                  style: AppStyles.lightStyle(
+                                    fontSize: 13,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  // controller.monthTotal.toStringAsFixed(2),
+                                  controller.monthTotal.toCommaSeparated(),
+                                  style: AppStyles.regularStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              controller.loading == true
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : controller.closedTicketsList?.isNotEmpty == true
                       ? Expanded(
                           child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
                             itemCount: controller.closedTicketsList?.length,
                             itemBuilder: (context, index) {
                               return _closedTicketCard(
@@ -128,7 +179,7 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

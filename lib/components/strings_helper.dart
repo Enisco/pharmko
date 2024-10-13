@@ -38,3 +38,12 @@ String combineDialCodeWithNumber(String dialCode, String phoneNumber) {
   // Combine dial code with sanitized phone number
   return '$dialCode$sanitizedNumber';
 }
+
+extension DoubleFormatting on double {
+  String toCommaSeparated() {
+    // Convert the double to a string with 2 decimal places
+    return toStringAsFixed(2).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match match) => '${match[1]},');
+  }
+}

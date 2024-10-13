@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pharmko/components/appstyles.dart';
-import 'package:pharmko/views/pharmacy_views/closed_tickets_view.dart';
 
 PreferredSizeWidget customAppbar(String titleTExt,
-    {BuildContext? context, bool? showLeading = false, bool? showActionIcon}) {
+    {BuildContext? context,
+    bool? showLeading = false,
+    bool? showAcionIcon,
+    List<Widget>? actions}) {
   return AppBar(
     automaticallyImplyLeading: false,
     leading: showLeading == true
@@ -30,24 +32,6 @@ PreferredSizeWidget customAppbar(String titleTExt,
       style: AppStyles.headerStyle(),
     ),
     backgroundColor: Colors.teal,
-    actions: [
-      showActionIcon == true
-          ? IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context!,
-                  MaterialPageRoute(
-                    builder: (context) => const ClosedTicketsListScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.recent_actors_outlined,
-                color: Colors.white,
-                size: 36,
-              ),
-            )
-          : const SizedBox.shrink(),
-    ],
+    actions: actions,
   );
 }

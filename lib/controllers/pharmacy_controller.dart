@@ -13,6 +13,7 @@ import 'package:pharmko/shared/logger.dart';
 class PharmacyController extends GetxController {
   OrderTicketModel? activeTicket;
   List<OrderTicketModel?>? closedTicketsList;
+  double todayTotal = 0.0, monthTotal = 0.0;
 
   bool loading = false;
 
@@ -74,8 +75,41 @@ class PharmacyController extends GetxController {
             .compareTo(a.timeCreated ?? DateTime.now());
       });
     }
+    calculateTotalSalesForTodayAndMonth(closedTicketsList);
     stopLoading();
     update();
+  }
+
+  calculateTotalSalesForTodayAndMonth(List<OrderTicketModel?>? ticketsList) {
+    if (ticketsList == null || ticketsList.isEmpty) {
+      todayTotal = 0.0;
+      monthTotal = 0.0;
+      return;
+    } else {
+      DateTime now = DateTime.now();
+      DateTime todayStart =
+          DateTime(now.year, now.month, now.day); // Start of today
+      DateTime monthStart =
+          DateTime(now.year, now.month, 1); // Start of the current month
+
+      for (var ticket in ticketsList) {
+        if (ticket == null) continue; // Skip null tickets
+
+        // Check if the ticket was opened today
+        if ((ticket.timeCreated ?? DateTime.now()).isAfter(todayStart) ||
+            (ticket.timeCreated ?? DateTime.now())
+                .isAtSameMomentAs(todayStart)) {
+          todayTotal += ticket.payment?.amount ?? 0;
+        }
+
+        // Check if the ticket was opened this month
+        if ((ticket.timeCreated ?? DateTime.now()).isAfter(monthStart) ||
+            (ticket.timeCreated ?? DateTime.now())
+                .isAtSameMomentAs(monthStart)) {
+          monthTotal += ticket.payment?.amount ?? 0;
+        }
+      }
+    }
   }
 
 // Function to generate a random 12-character alphanumeric string

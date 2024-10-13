@@ -4,7 +4,7 @@ import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
-import 'package:pharmko/views/pharmacy_views/closed_tickets_view.dart';
+import 'package:pharmko/views/pharmacy_views/sales_records_view.dart';
 import 'package:pharmko/views/pharmacy_views/pharmacy_active_orders_view.dart';
 
 class PharmacyHomePage extends StatefulWidget {
@@ -26,7 +26,7 @@ class _PharmacyHomePageState extends State<PharmacyHomePage>
   final List<Widget> _pages = [
     PharmacyActiveTicketPage(),
     const Center(child: Text('Inventory Page')),
-    const ClosedTicketsListScreen(),
+    const SalesRecordsScreen(),
   ];
   final List<IconData> _menuIcons = [
     Icons.home,
