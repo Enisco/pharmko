@@ -67,6 +67,7 @@ class PharmacyStoreController extends GetxController {
       ticketId: generateRandomString(),
       medications: cartMedicineList,
       payment: Payment(amount: amountPaid, paid: true),
+      timeCreated: DateTime.now(),
     );
     logger.f("Sales ticket: ${salesTicket.toJson()}");
     await FirebaseRepo().saveSalesTicket(salesTicket);
@@ -75,7 +76,7 @@ class PharmacyStoreController extends GetxController {
     await FirebaseRepo().updateInventory(cartMedicineList, medicineList);
     stopLoading();
     Get.put(PharmacyStoreController()).resetTicketCreationData();
-    Fluttertoast.showToast(msg: "Imnventory Updated Successfully");
+    Fluttertoast.showToast(msg: "Inventory Updated Successfully");
   }
 
   Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {

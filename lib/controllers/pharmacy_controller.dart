@@ -67,6 +67,13 @@ class PharmacyController extends GetxController {
   fetchAllClosedTickets() async {
     loading = true;
     closedTicketsList = await FirebaseRepo().fecthClosedTickets();
+    if (closedTicketsList?.isNotEmpty == true) {
+      closedTicketsList?.sort((a, b) {
+        if (a == null || b == null) return 0;
+        return (b.timeCreated ?? DateTime.now())
+            .compareTo(a.timeCreated ?? DateTime.now());
+      });
+    }
     stopLoading();
     update();
   }

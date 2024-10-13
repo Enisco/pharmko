@@ -97,7 +97,7 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ticket.buyer?.name ?? 'Walkin Customer',
+                  ticket.buyer?.name ?? 'Walk-In Customer',
                   style: AppStyles.regularStyle(
                       fontSize: 17,
                       color: ticket.isWalkInSales == true
@@ -117,7 +117,7 @@ class _ClosedTicketsListScreenState extends State<ClosedTicketsListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "₦${((ticket.payment?.amount ?? 0) / 100).toStringAsFixed(2)}",
+                  "₦${((ticket.payment?.amount ?? 0)).toStringAsFixed(2)}",
                   style: AppStyles.regularStyle(fontSize: 14),
                 ),
                 Text(
