@@ -76,7 +76,6 @@ class _SalesRecordsScreenState extends State<SalesRecordsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  // controller.monthTotal.toStringAsFixed(2),
                                   controller.monthTotal.toCommaSeparated(),
                                   style: AppStyles.regularStyle(fontSize: 20),
                                 ),

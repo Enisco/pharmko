@@ -4,8 +4,9 @@ import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/data/appdata.dart';
 import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
-import 'package:pharmko/views/pharmacy_views/sales_records_view.dart';
+import 'package:pharmko/views/pharmacy_views/inventory_view.dart';
 import 'package:pharmko/views/pharmacy_views/pharmacy_active_orders_view.dart';
+import 'package:pharmko/views/pharmacy_views/sales_records_view.dart';
 
 class PharmacyHomePage extends StatefulWidget {
   const PharmacyHomePage({super.key});
@@ -25,7 +26,7 @@ class _PharmacyHomePageState extends State<PharmacyHomePage>
   // List of corresponding sections' widgets
   final List<Widget> _pages = [
     PharmacyActiveTicketPage(),
-    const Center(child: Text('Inventory Page')),
+    const InventoryScreen(),
     const SalesRecordsScreen(),
   ];
   final List<IconData> _menuIcons = [
