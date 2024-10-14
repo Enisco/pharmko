@@ -21,10 +21,13 @@ PreferredSizeWidget customAppbar(String titleTExt,
               ),
             );
           })
-        : const Icon(
-            Icons.circle,
-            color: Colors.white,
-            size: 10,
+        : const Padding(
+            padding: EdgeInsets.only(left: 14.0),
+            child: Icon(
+              Icons.local_hospital_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
     leadingWidth: 30,
     title: Text(

@@ -48,8 +48,8 @@ class _MedicineStoreCardState extends State<MedicineStoreCard> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            MedicineDetailsScreen(medicine: widget.medicine),
+                        builder: (context) => StoreMedicineDetailsScreen(
+                            medicine: widget.medicine),
                       ),
                     );
                   },

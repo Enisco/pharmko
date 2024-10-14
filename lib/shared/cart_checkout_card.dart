@@ -37,7 +37,7 @@ class _CartCheckoutCardState extends State<CartCheckoutCard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      MedicineDetailsScreen(medicine: widget.medicine),
+                      StoreMedicineDetailsScreen(medicine: widget.medicine),
                 ),
               );
             },

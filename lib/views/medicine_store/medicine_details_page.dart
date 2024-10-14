@@ -8,16 +8,18 @@ import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
 import 'package:pharmko/shared/logger.dart';
 
-class MedicineDetailsScreen extends StatefulWidget {
+class StoreMedicineDetailsScreen extends StatefulWidget {
   final MedicineModel medicine;
 
-  const MedicineDetailsScreen({super.key, required this.medicine});
+  const StoreMedicineDetailsScreen({super.key, required this.medicine});
 
   @override
-  State<MedicineDetailsScreen> createState() => _MedicineDetailsScreenState();
+  State<StoreMedicineDetailsScreen> createState() =>
+      _StoreMedicineDetailsScreenState();
 }
 
-class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
+class _StoreMedicineDetailsScreenState
+    extends State<StoreMedicineDetailsScreen> {
   final controller = Get.put(PharmacyStoreController());
   int _quantity = 1;
 
@@ -64,9 +66,9 @@ class _MedicineDetailsScreenState extends State<MedicineDetailsScreen> {
             ),
             verticalSpacer(size: 12),
             _detailsCard(
-                "Amount", '₦${widget.medicine.amount?.toStringAsFixed(2)}'),
+                "Amount:", '₦${widget.medicine.amount?.toStringAsFixed(2)}'),
             _detailsCard(
-              "Expiry Date",
+              "Expiry Date:",
               widget.medicine.expiryDate?.toLocal().toString().split(' ')[0] ??
                   DateTime.now()
                       .add(const Duration(days: 150))

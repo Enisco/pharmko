@@ -7,7 +7,9 @@ import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
+import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/medicine_store/add_new_med_page.dart';
+import 'package:pharmko/views/medicine_store/inventory_med_details_page.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -31,7 +33,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
       init: PharmacyStoreController(),
       builder: (ctxt) {
         return Scaffold(
-          // backgroundColor: Colors.white,
           appBar: customAppbar("Inventory"),
           body: Column(
             children: [
@@ -42,7 +43,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   : controller.medicineList.isNotEmpty == true
                       ? Expanded(
                           child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 90),
                             itemCount: controller.medicineList.length,
                             itemBuilder: (context, index) {
                               return inventoryCard(
@@ -65,25 +66,25 @@ class _InventoryScreenState extends State<InventoryScreen> {
               );
             },
             child: Container(
-              width: 120,
+              width: 140,
               height: 60,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.teal,
-              ),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.teal, width: 2.5)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: Colors.teal,
                     size: 22,
                   ),
-                  horizontalSpacer(size: 5),
+                  horizontalSpacer(size: 2),
                   Text(
-                    "Add to\nstore",
+                    "Add to store",
                     style: AppStyles.regularStyle(
-                      color: Colors.white,
+                      color: Colors.teal,
                       fontSize: 16,
                     ).copyWith(height: 1),
                   ),
@@ -99,14 +100,15 @@ class _InventoryScreenState extends State<InventoryScreen> {
   Widget inventoryCard(MedicineModel medicineItem) {
     return InkWell(
       onTap: () {
-        // TODO: Go to med details screen
-        // logger.w("Clicked ${ticket.buyer?.name} ticket");
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ClosedTicketsView(ticket: ticket),
-        //   ),
-        // );
+        logger.w("Clicked ${medicineItem.name}");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InventoryMedicineItemDetailsScreen(
+              medicine: medicineItem,
+            ),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),

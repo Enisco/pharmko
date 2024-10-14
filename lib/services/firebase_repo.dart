@@ -196,6 +196,25 @@ class FirebaseRepo {
     await databaseRef.push().set(medicine.toJson());
   }
 
+  Future<void> updateIndividualMedicineInInventory(
+      MedicineModel updatedMedicine) async {
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.ref().child("inventory");
+
+    Query query = databaseRef.orderByChild('id').equalTo(updatedMedicine.id);
+    DataSnapshot snapshot = await query.get();
+
+    if (snapshot.exists) {
+      var firstChild = snapshot.children.first;
+
+      await firstChild.ref.set(updatedMedicine.toJson());
+      logger.f('Updated ${updatedMedicine.name}');
+    } else {
+      throw Exception(
+          'Medicine with id ${updatedMedicine.id} not found in the inventory');
+    }
+  }
+
   int generateRandomItemsRemaining() {
     final random = Random();
     return 100 + random.nextInt(401); // Random number between 100 and 500
