@@ -5,7 +5,6 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/data/appdata.dart';
-import 'package:pharmko/services/firebase_repo.dart';
 import 'package:pharmko/views/widgets/landing_page_options_card.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -95,12 +94,12 @@ class _PharmkoLandingPageState extends State<PharmkoLandingPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            FirebaseRepo().uploadMedicineList();
-          },
-          child: const Text('Upload'),
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     FirebaseRepo().uploadMedicineList();
+        //   },
+        //   child: const Text('Upload'),
+        // ),
       ),
     );
   }

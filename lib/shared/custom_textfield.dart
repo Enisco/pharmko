@@ -144,7 +144,7 @@ class CustomTextField extends StatelessWidget {
                   SystemChannels.textInput.invokeMethod('TextInput.hide');
                 }),
             style: inputStringStyle ??
-                AppStyles.lightStyle().copyWith(letterSpacing: 0.8),
+                AppStyles.regularStyle().copyWith(letterSpacing: 0.8),
             decoration: InputDecoration(
               isCollapsed: isCollapsed ?? false,
               floatingLabelBehavior: floatingLabelBehavior,

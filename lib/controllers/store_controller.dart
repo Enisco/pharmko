@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/controllers/patient_controller.dart';
@@ -77,13 +76,6 @@ class PharmacyStoreController extends GetxController {
     stopLoading();
     Get.put(PharmacyStoreController()).resetTicketCreationData();
     Fluttertoast.showToast(msg: "Inventory Updated Successfully");
-  }
-
-  Future<void> addMedicineToInventoryList(MedicineModel newMedicine) async {
-    logger.w("Uploading medicines");
-    DatabaseReference databaseRef =
-        FirebaseDatabase.instance.ref().child("inventory");
-    await databaseRef.push().set(newMedicine.toJson());
   }
 
   load() {

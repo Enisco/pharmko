@@ -188,14 +188,12 @@ class FirebaseRepo {
     await updateInventoryInDatabase(updatedInventoryList);
   }
 
-  String generateRandomId(int length) {
-    const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random();
-    return String.fromCharCodes(
-      Iterable.generate(length,
-          (_) => characters.codeUnitAt(random.nextInt(characters.length))),
-    );
+  Future<void> addMedicineToInventory(MedicineModel medicine) async {
+    logger.w("Adding medicine to Inventory");
+    DatabaseReference databaseRef =
+        FirebaseDatabase.instance.ref().child("inventory");
+
+    await databaseRef.push().set(medicine.toJson());
   }
 
   int generateRandomItemsRemaining() {
@@ -216,4 +214,14 @@ class FirebaseRepo {
       await databaseRef.push().set(modifiableMedicine);
     }
   }
+}
+
+String generateRandomId(int length) {
+  const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  final random = Random();
+  return String.fromCharCodes(
+    Iterable.generate(length,
+        (_) => characters.codeUnitAt(random.nextInt(characters.length))),
+  );
 }

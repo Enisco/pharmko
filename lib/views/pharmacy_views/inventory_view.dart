@@ -6,9 +6,8 @@ import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
-import 'package:pharmko/models/ticket_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
-import 'package:pharmko/views/widgets/active_ticket_view.dart';
+import 'package:pharmko/views/medicine_store/add_new_med_page.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -58,13 +57,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           floatingActionButton: InkWell(
             onTap: () {
-              // TODO: Add medicine to inventory screen here
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => const AddMedicinePage(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddNewMedicinePage(),
+                ),
+              );
             },
             child: Container(
               width: 120,
@@ -87,7 +85,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     style: AppStyles.regularStyle(
                       color: Colors.white,
                       fontSize: 16,
-                    ),
+                    ).copyWith(height: 1),
                   ),
                 ],
               ),
@@ -136,7 +134,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   children: [
                     Text(
                       "Qty Rem: ",
-                      style: AppStyles.regularStyle(
+                      style: AppStyles.lightStyle(
                           fontSize: 12, color: Colors.grey),
                     ),
                     Text(
@@ -173,24 +171,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ClosedTicketsView extends StatelessWidget {
-  final OrderTicketModel ticket;
-  const ClosedTicketsView({super.key, required this.ticket});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: customAppbar(ticket.buyer?.name ?? '', showLeading: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: ActiveTicketWidget(
-          ticketData: ticket,
         ),
       ),
     );
