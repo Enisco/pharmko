@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
+import 'package:pharmko/controllers/store_controller.dart';
+import 'package:pharmko/views/medicine_store/stock_notification_screen.dart';
 
-PreferredSizeWidget customAppbar(String titleTExt,
-    {BuildContext? context,
-    bool? showLeading = false,
-    bool? showAcionIcon,
-    List<Widget>? actions}) {
+PreferredSizeWidget customAppbar(
+  String titleTExt, {
+  BuildContext? context,
+  bool? showLeading = false,
+  bool? showAcionIcon,
+}) {
+  final controller = Get.put(PharmacyStoreController());
+  final totalNotifItems =
+      controller.expiringSoonList.length + controller.lowStockList.length;
+
   return AppBar(
     automaticallyImplyLeading: false,
     leading: showLeading == true
@@ -35,6 +43,38 @@ PreferredSizeWidget customAppbar(String titleTExt,
       style: AppStyles.headerStyle(),
     ),
     backgroundColor: Colors.teal,
-    actions: actions,
+    actions: [
+      GetBuilder<PharmacyStoreController>(
+        init: PharmacyStoreController(),
+        builder: (ctxt) {
+          return SizedBox(
+            width: 80,
+            child: totalNotifItems > 0
+                ? Builder(builder: (context) {
+                    return IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const StockNotificationsScreen(),
+                          ),
+                        );
+                      },
+                      icon: Badge(
+                        label: Text('$totalNotifItems'),
+                        child: const Icon(
+                          Icons.notifications_none,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    );
+                  })
+                : const SizedBox.shrink(),
+          );
+        },
+      )
+    ],
   );
 }

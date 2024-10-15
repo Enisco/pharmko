@@ -8,6 +8,7 @@ import 'package:pharmko/shared/logger.dart';
 
 class PharmacyStoreController extends GetxController {
   List<MedicineModel?> cartMedicineList = [], medicineList = [];
+  List<MedicineModel?> expiringSoonList = [], lowStockList = [];
   bool loading = false;
   double totalCost = 0.0;
 
@@ -25,6 +26,27 @@ class PharmacyStoreController extends GetxController {
     medicineList = await FirebaseRepo().fecthMedicinesInventory();
     medicineList.sort((a, b) => (a?.name ?? '').compareTo(b?.name ?? ''));
     stopLoading();
+    updateController();
+    filterMedicines(medicineList);
+  }
+
+  filterMedicines(List<MedicineModel?> medicineList) {
+    DateTime currentDate = DateTime.now();
+    DateTime oneMonthFromNow = currentDate.add(const Duration(days: 30));
+
+    for (var medicine in medicineList) {
+      if ((medicine?.expiryDate ?? DateTime.now().add(const Duration(days: 24)))
+          .isBefore(oneMonthFromNow)) {
+        expiringSoonList.add(medicine);
+      }
+
+      if ((medicine?.itemsRemaining ?? 0) < 20) {
+        lowStockList.add(medicine);
+      }
+    }
+    logger.w(
+        "expiringSoonList: ${expiringSoonList.length}, lowStockList: ${lowStockList.length}");
+
     updateController();
   }
 

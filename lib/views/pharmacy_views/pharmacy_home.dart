@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
+import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/data/appdata.dart';
+import 'package:pharmko/views/medicine_store/inventory_view.dart';
 import 'package:pharmko/views/medicine_store/medicine_store_page.dart';
-import 'package:pharmko/views/pharmacy_views/inventory_view.dart';
 import 'package:pharmko/views/pharmacy_views/pharmacy_active_orders_view.dart';
 import 'package:pharmko/views/pharmacy_views/sales_records_view.dart';
 
@@ -39,6 +41,7 @@ class _PharmacyHomePageState extends State<PharmacyHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: _sections.length, vsync: this);
+    Get.put(PharmacyStoreController()).getMedicineList();
   }
 
   @override
