@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pharmko/components/appstyles.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
+import 'package:pharmko/shared/curved_container.dart';
+import 'package:pharmko/shared/logger.dart';
+import 'package:pharmko/views/medicine_store/inventory_med_details_page.dart';
 
 class StockNotificationsScreen extends StatefulWidget {
   const StockNotificationsScreen({super.key});
@@ -23,9 +28,29 @@ class _StockNotificationsScreenState extends State<StockNotificationsScreen> {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Notification'),
-              bottom: const TabBar(
-                tabs: [
+              backgroundColor: Colors.teal,
+              leading: IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
+                  size: 35,
+                  color: Colors.white,
+                ),
+              ),
+              title: Text(
+                'Notifications',
+                style:
+                    AppStyles.regularStyle(fontSize: 20, color: Colors.white),
+              ),
+              bottom: TabBar(
+                indicatorColor: Colors.amber.shade800,
+                indicatorWeight: 2,
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelStyle:
+                    AppStyles.regularStyle(fontSize: 16, color: Colors.white),
+                unselectedLabelStyle:
+                    AppStyles.regularStyle(fontSize: 16, color: Colors.white70),
+                tabs: const [
                   Tab(text: 'Expiring Soon'),
                   Tab(text: 'Low Stock'),
                 ],
@@ -61,14 +86,32 @@ class MedicineListView extends StatelessWidget {
       itemCount: medicines.length,
       itemBuilder: (context, index) {
         final medicine = medicines[index];
-        return ListTile(
-          title: Text(medicine?.name ?? ''),
-          subtitle: Text(
-              'Expiry: ${medicine?.expiryDate?.toLocal().toIso8601String().substring(0, 10)}'),
-          trailing: Text('Stock: ${medicine?.itemsRemaining}'),
-          onTap: () {
-            // Optionally handle tap events here, like showing detailed information
-          },
+        return CustomCurvedContainer(
+          // height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(medicine?.name ?? ''),
+            subtitle: Text(
+              'Expiry: ${DateFormat('MMM dd, yyyy').format(medicine?.expiryDate ?? DateTime.now())}',
+              style: const TextStyle(fontSize: 14),
+            ),
+            trailing: Text(
+              'Stock: ${medicine?.itemsRemaining}',
+              style: const TextStyle(fontSize: 14),
+            ),
+            onTap: () {
+              logger.w("Clicked ${medicine?.name}");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InventoryMedicineItemDetailsScreen(
+                    medicine: medicine!,
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );

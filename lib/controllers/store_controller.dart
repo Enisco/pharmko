@@ -33,6 +33,8 @@ class PharmacyStoreController extends GetxController {
   filterMedicines(List<MedicineModel?> medicineList) {
     DateTime currentDate = DateTime.now();
     DateTime oneMonthFromNow = currentDate.add(const Duration(days: 30));
+    expiringSoonList = [];
+    lowStockList = [];
 
     for (var medicine in medicineList) {
       if ((medicine?.expiryDate ?? DateTime.now().add(const Duration(days: 24)))
@@ -40,7 +42,7 @@ class PharmacyStoreController extends GetxController {
         expiringSoonList.add(medicine);
       }
 
-      if ((medicine?.itemsRemaining ?? 0) < 20) {
+      if ((medicine?.itemsRemaining ?? 0) <= 20) {
         lowStockList.add(medicine);
       }
     }

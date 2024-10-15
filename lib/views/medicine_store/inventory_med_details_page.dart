@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
+import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/services/firebase_repo.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
+import 'package:pharmko/shared/custom_button.dart';
 import 'package:pharmko/shared/custom_textfield.dart';
 import 'package:pharmko/shared/logger.dart';
 
@@ -136,53 +138,86 @@ class _InventoryMedicineItemDetailsScreenState
           ),
         ),
       ),
-      bottomNavigationBar: InkWell(
-        onTap: () async {
-          if (additionalItemsQtyController.text.trim().isNotEmpty == true) {
-            final newQuantity = (widget.medicine.itemsRemaining ?? 0) +
-                int.parse(additionalItemsQtyController.text.trim());
-            widget.medicine.itemsRemaining = newQuantity;
-            if (amountController.text.trim().isNotEmpty == true) {
-              widget.medicine.amount =
-                  double.parse(amountController.text.trim());
-            }
-            logger.f("Updated med data: ${widget.medicine.toJson()}");
-            await FirebaseRepo()
-                .updateIndividualMedicineInInventory(widget.medicine);
-            Navigator.pop(context);
-            Get.put(PharmacyStoreController()).getMedicineList();
-          } else {
-            Fluttertoast.showToast(msg: "Enter additional item quantity");
-          }
-        },
-        child: Container(
-          width: 200,
-          height: 60,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            CustomButton(
+              width: screenWidth(context) * 0.42,
+              onPressed: () async {
+                if (additionalItemsQtyController.text.trim().isNotEmpty ==
+                    true) {
+                  final newQuantity = (widget.medicine.itemsRemaining ?? 0) +
+                      int.parse(additionalItemsQtyController.text.trim());
+                  widget.medicine.itemsRemaining = newQuantity;
+                  if (amountController.text.trim().isNotEmpty == true) {
+                    widget.medicine.amount =
+                        double.parse(amountController.text.trim());
+                  }
+                  logger.f("Updated med data: ${widget.medicine.toJson()}");
+                  await FirebaseRepo()
+                      .updateIndividualMedicineInInventory(widget.medicine);
+                  Navigator.pop(context);
+                  Get.put(PharmacyStoreController()).getMedicineList();
+                } else {
+                  Fluttertoast.showToast(msg: "Enter additional item quantity");
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    CupertinoIcons.add_circled,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                  horizontalSpacer(size: 5),
+                  Text(
+                    "Update",
+                    style: AppStyles.regularStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            color: Colors.teal,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                CupertinoIcons.add_circled,
-                color: Colors.white,
-                size: 22,
+            CustomButton(
+              width: screenWidth(context) * 0.42,
+              onPressed: () async {
+                logger.w("Delete ${widget.medicine.name}");
+                try {
+                  await FirebaseRepo().removeIndividualMedicineFromInventory(
+                      widget.medicine.id ?? '');
+                } catch (e) {
+                  logger.e(e.toString());
+                }
+                Navigator.pop(context);
+                Get.put(PharmacyStoreController()).getMedicineList();
+              },
+              color: Colors.white,
+              borderColor: Colors.grey.shade200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    CupertinoIcons.delete,
+                    color: Colors.black,
+                    size: 22,
+                  ),
+                  horizontalSpacer(size: 5),
+                  Text(
+                    "Delete",
+                    style: AppStyles.regularStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
-              horizontalSpacer(size: 5),
-              Text(
-                "Update",
-                style: AppStyles.regularStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
