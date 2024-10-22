@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pharmko/components/appstyles.dart';
+import 'package:pharmko/components/screen_size.dart';
 import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
@@ -37,6 +38,21 @@ class _StoreMedicineDetailsScreenState
         _quantity--;
       }
     });
+  }
+
+  DateTime threeMonthsFromNow = DateTime.now().add(const Duration(days: 90));
+  bool expiringSoon(DateTime expiryDate) {
+    if (expiryDate.isBefore(threeMonthsFromNow)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  int daysFromNow(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = dateTime.difference(now);
+    return difference.inDays.abs();
   }
 
   @override
@@ -129,42 +145,68 @@ class _StoreMedicineDetailsScreenState
       ),
       bottomNavigationBar: (widget.medicine.itemsRemaining ?? 0) <= 0
           ? const SizedBox.shrink()
-          : InkWell(
-              onTap: () {
-                final medicineToCart = widget.medicine;
-                medicineToCart.orderQuantity = _quantity;
-                logger.f("medicineToCart: ${medicineToCart.toJson()}");
-                controller.updateCartItems(medicineToCart);
-                Navigator.pop(context);
-              },
-              child: Container(
-                width: 200,
-                height: 60,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  color: Colors.teal,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      CupertinoIcons.cart_badge_plus,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                    horizontalSpacer(size: 5),
-                    Text(
-                      "Add to Cart",
-                      style: AppStyles.regularStyle(
-                        color: Colors.white,
-                        fontSize: 16,
+          : SizedBox(
+              height: 100,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  expiringSoon(widget.medicine.expiryDate ?? DateTime.now())
+                      ? Container(
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.amber),
+                          ),
+                          width: screenWidth(context),
+                          child: Center(
+                            child: Text(
+                              "Expiring in ${daysFromNow(widget.medicine.expiryDate ?? DateTime.now())} days",
+                              style: AppStyles.regularStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  InkWell(
+                    onTap: () {
+                      final medicineToCart = widget.medicine;
+                      medicineToCart.orderQuantity = _quantity;
+                      logger.f("medicineToCart: ${medicineToCart.toJson()}");
+                      controller.updateCartItems(medicineToCart);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: screenWidth(context),
+                      height: 60,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        color: Colors.teal,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            CupertinoIcons.cart_badge_plus,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                          horizontalSpacer(size: 5),
+                          Text(
+                            "Add to Cart",
+                            style: AppStyles.regularStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
     );
