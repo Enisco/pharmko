@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmko/components/appstyles.dart';
@@ -7,6 +8,7 @@ import 'package:pharmko/components/spacer.dart';
 import 'package:pharmko/controllers/store_controller.dart';
 import 'package:pharmko/models/medicine_model.dart';
 import 'package:pharmko/shared/custom_appbar.dart';
+import 'package:pharmko/shared/custom_textfield.dart';
 import 'package:pharmko/shared/logger.dart';
 import 'package:pharmko/views/medicine_store/add_new_med_page.dart';
 import 'package:pharmko/views/medicine_store/inventory_med_details_page.dart';
@@ -20,11 +22,31 @@ class InventoryScreen extends StatefulWidget {
 
 class _InventoryScreenState extends State<InventoryScreen> {
   final controller = Get.put(PharmacyStoreController());
+  TextEditingController searchController = TextEditingController();
+  String _previousText = "";
+
+  void _handleTextChange(String currentText) {
+    if ((_previousText.isEmpty && currentText.isNotEmpty) ||
+        (_previousText.isNotEmpty && currentText.isEmpty)) {
+      setState(() {
+        _previousText = currentText;
+      });
+    } else {
+      _previousText = currentText;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     controller.getMedicineList();
+    searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -32,29 +54,66 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return GetBuilder<PharmacyStoreController>(
       init: PharmacyStoreController(),
       builder: (ctxt) {
+        List<MedicineModel?> medicineListToDisplay = [];
+        medicineListToDisplay = controller.searchMedicineList.isNotEmpty == true
+            ? controller.searchMedicineList
+            : controller.medicineList;
+
         return Scaffold(
           appBar: customAppbar("Inventory"),
-          body: Column(
-            children: [
-              controller.loading == true
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : controller.medicineList.isNotEmpty == true
-                      ? Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 90),
-                            itemCount: controller.medicineList.length,
-                            itemBuilder: (context, index) {
-                              return inventoryCard(
-                                controller.medicineList[index]!,
-                              );
-                            },
-                          ),
-                        )
-                      : const Text("No records yet"),
-            ],
-          ),
+          body: controller.loading == true
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(
+                        textEditingController: searchController,
+                        hintText: "Search inventory . . .",
+                        hintStyle: AppStyles.lightStyle(),
+                        suffix: searchController.text.trim().isNotEmpty == true
+                            ? IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    searchController.clear();
+                                    controller.searchMedicine('');
+                                    SystemChannels.textInput
+                                        .invokeMethod('TextInput.hide');
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.cancel,
+                                  size: 14,
+                                  color: Colors.grey.withOpacity(0.6),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        onChanged: (txt) {
+                          _handleTextChange(txt);
+                          controller.searchMedicine(txt);
+                        },
+                      ),
+                    ),
+                    controller.searchMedicineList.isEmpty == true &&
+                            searchController.text.trim().isNotEmpty == true
+                        ? Text(
+                            "No results for '${searchController.text.trim()}'")
+                        : controller.medicineList.isNotEmpty == true
+                            ? Expanded(
+                                child: ListView.builder(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 90),
+                                  itemCount: medicineListToDisplay.length,
+                                  itemBuilder: (context, index) {
+                                    return inventoryCard(
+                                      medicineListToDisplay[index]!,
+                                    );
+                                  },
+                                ),
+                              )
+                            : const Text("No records yet"),
+                  ],
+                ),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
           floatingActionButton: InkWell(
             onTap: () {

@@ -55,8 +55,6 @@ class _MedicineStorePageState extends State<MedicineStorePage> {
       initState: (state) => controller.getMedicineList(),
       builder: (ctxt) {
         List<MedicineModel?> medicineListToDisplay = [];
-        // Show searchResultsList if it's not empty,
-        //meaning there's a search text in the searchController textfield
         medicineListToDisplay = controller.searchMedicineList.isNotEmpty == true
             ? controller.searchMedicineList
             : controller.medicineList;
@@ -64,7 +62,7 @@ class _MedicineStorePageState extends State<MedicineStorePage> {
         return Scaffold(
           appBar: customAppbar("Pharmko Store"),
           body: controller.loading == true
-              ? const SizedBox.shrink()
+              ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
                     Padding(
