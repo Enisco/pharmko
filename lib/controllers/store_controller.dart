@@ -8,6 +8,7 @@ import 'package:pharmko/shared/logger.dart';
 
 class PharmacyStoreController extends GetxController {
   List<MedicineModel?> cartMedicineList = [], medicineList = [];
+  List<MedicineModel?> searchMedicineList = [];
   List<MedicineModel?> expiringSoonList = [], lowStockList = [];
   bool loading = false;
   double totalCost = 0.0;
@@ -19,6 +20,23 @@ class PharmacyStoreController extends GetxController {
     update();
     stopLoading();
     logger.w("Reset data: ${cartMedicineList.length}, $totalCost");
+  }
+
+  searchMedicine(String searchText) {
+    logger.w("Searching $searchText . . . ");
+    if (searchText.isEmpty == true || searchText == '') {
+      searchMedicineList = [];
+      update();
+    } else {
+      final matchingMedicines = medicineList.where((medicine) {
+        final nameMatches =
+            medicine?.name?.toLowerCase().contains(searchText.toLowerCase());
+        return nameMatches ?? false;
+      }).toList();
+      searchMedicineList = matchingMedicines;
+      update();
+    }
+    logger.f("Search Result: ${searchMedicineList.length}");
   }
 
   getMedicineList() async {
